@@ -3,3 +3,31 @@
     margin: 0;
     box-sizing: border-box;
 }
+body{
+    /* font-family: sans-serif; */
+}
+section{
+   margin-top: 100px;
+}
+
+.btn-login{
+    background-color: #316AFF;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+}
+
+input{
+    outline: none;
+    box-shadow: none !important;
+}
+
+.UserNameFeedback,.passwordFeedback{
+    display: none;
+}
+
+#forget-Pass{
+    cursor: pointer;
+    color: #316AFF;
+}

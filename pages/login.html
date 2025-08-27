@@ -11,13 +11,73 @@
 </head>
 
 <body>
-  <h1 class="bg-danger">hellllllllllllllllllllllllllllllo</h1>
-  <h2>
-    <i class="fa-solid fa-user"></i> to login
-  </h2>
+  <section class="text-center d-flex align-items-center">
+    <div class="container ">
+      <div class="row d-flex align-items-center justify-content-center">
+        <div class="col-12 col-md-9">
+          <div class="card pt-3 pb-3">
+            <div class="row card-body d-flex justify-content-evenly align-items-center">
+              <div class="form text-start col-9 col-lg-6 ">
+                <div class="card-title text-center">
+                  <img src="../assets/images/logo.png" style="width: 50px;" alt="">
+                </div>
+                <h3>Login</h3>
+                <p class="text-secondary">Welcome back! Please Login to your</p>
+                <form class="form-body">
+                  <div class="mb-3">
+                    <div class="input-group ">
+                      <span class="input-group-text" id="inputGroupPrepend">
+                        <i class="fa-regular fa-envelope fa-lg"></i>
+                      </span>
+                      <input type="text" class="form-control" id="userName" placeholder="Username"
+                        aria-describedby="inputGroupPrepend" required>
+                    </div>
+                    <div class="UserNameFeedback text-danger">
+                      Please enter Valid Username.
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <div class="input-group ">
+                      <span class="input-group-text ps-3" id="inputGroupPrepend">
+                        <i class="fa fa-unlock-alt"></i>
+                      </span>
+                      <input type="password" class="form-control" id="password" placeholder="Password"
+                        aria-describedby="inputGroupPrepend" required>
+                    </div>
+                    <div class="passwordFeedback  text-danger">
+                      Please enter Vaild Password.
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-content-between">
+                    <div>
+                      <input type="checkbox" name="remindMe" id="">
+                      <span>Remind Me</span>
+                    </div>
+                    <div>
+                      <p id="forget-Pass">Forgot Password?</p>
+                    </div>
+                  </div>
+
+                  <button class="btn-login w-100 fw-semibold" type="submit">Login</button>
+                </form>
+
+              </div>
+              <div class="d-none d-lg-block col-lg-6">
+                <img src="../assets/images/login.png" alt="login-image" style="width: 300px;">
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+  <script src="../js/login.js"></script>
   <script src="../js/bootstrap.bundle.min.js"></script>
   <script src="../js/all.min.js"></script>
-  <script src="../js/login.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 </body>
 
 </html>
