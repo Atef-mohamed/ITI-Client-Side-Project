@@ -1,5 +1,142 @@
-*{
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 }
+
+body.dark-mode {
+  background-color: #3A3B4D;
+  color: #e0e0e0;
+}
+
+body.dark-mode table {
+  color: #e0e0e0;
+}
+
+body.dark-mode .border {
+  border-color: #555 !important;
+}
+
+body.dark-mode .count,
+body.dark-mode .filter-dropdown {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+}
+
+body.dark-mode input,
+body.dark-mode select {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  border: 1px solid #555;
+}
+
+body.dark-mode .status.present {
+  background-color: #22B07E1A !important;
+  color: #22B07E;
+}
+
+body.dark-mode .status.late {
+  background-color: #FF81101A !important;
+  color: #FF8110;
+}
+
+body.dark-mode .status.absent {
+  background-color: #FF401C1A !important;
+  color: #FF401C;
+}
+
+body.dark-mode .status.leave {
+  background-color: #02B4FA1A !important;
+  color: #02B4FA;
+}
+
+.logo {
+  width: 70px;
+}
+
+.srch {
+  width: 400px;
+}
+
+.search {
+  width: 16px;
+  height: 16px;
+}
+
+.mode {
+  width: 30px;
+  height: 16px;
+}
+
+.admin {
+  width: 40px;
+  height: 40px;
+}
+
+.out {
+  width: 18px;
+}
+
+.count {
+  background-color: #316AFF1A;
+  width: 160px;
+}
+
+table {
+  border-collapse: collapse;
+  margin: 0 auto;
+  width: 95%;
+}
+
+.titles th {
+  background-color: #316AFF1A;
+  padding: 10px 15px;
+  padding-left: 30px;
+}
+
+.mytable td {
+  text-align: center;
+  vertical-align: middle;
+  padding: 10px 30px;
+}
+
+.mytable tr {
+  border-bottom: 1px solid #ddd;
+}
+
+.status.present,
+.status.late,
+.status.absent,
+.status.leave,
+.status.wfh {
+  display: inline-block;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 5px;
+  line-height: 30px;
+  white-space: nowrap;
+}
+
+.status.present {
+  background-color: #02B4FA1A;
+  color: #22B07E;
+}
+
+.status.late {
+  background-color: #FF81101A;
+  color: #FF8110;
+}
+
+.status.absent {
+  background-color: #FF401C1A;
+  color: #FF401C;
+}
+
+.status.leave {
+  background-color: #02B4FA1A;
+  color: #02B4FA;
+}
+.mode:hover {
+  cursor: pointer;
+}
+
