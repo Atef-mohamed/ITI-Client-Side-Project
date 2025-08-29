@@ -5,13 +5,12 @@ modeImg.addEventListener("click", () => {
 }); 
 
 document.addEventListener("DOMContentLoaded", () => {
-  // ===== تحديث التاريخ =====
   let today = new Date();
   let formattedDate =
     today.getDate() + "-" + (today.getMonth() + 1) + "-" + today.getFullYear();
   document.getElementById("last-seen").innerText = formattedDate;
 
-  // ===== جلب البيانات =====
+
   let savedData = localStorage.getItem("attendanceData");
   if (savedData) {
     let parsed = JSON.parse(savedData);
@@ -55,7 +54,7 @@ function displayTable(employees, attendanceRecords) {
     `;
     tbody.appendChild(row);
 
-    // ===== تحديث الحالة =====
+    
     row.updateStatus = function () {
       let statusCell = row.querySelector(".status");
       let checkInInput = row.querySelector(".checkin");
@@ -82,7 +81,7 @@ function displayTable(employees, attendanceRecords) {
     };
     row.updateStatus();
 
-    // ===== تمكين/تعطيل التعديل حسب checkbox =====
+   
     let checkbox = row.querySelector(".row-select");
     checkbox.addEventListener("change", () => {
       let checkinInput = row.querySelector(".checkin");
@@ -93,7 +92,7 @@ function displayTable(employees, attendanceRecords) {
   });
 }
 
-// ===== submit وتخزين البيانات =====
+
 function addSubmitAction(dataObj) {
   const submitBtn = document.getElementById("submit-btn");
   const tbody = document.querySelector(".mytable tbody");
@@ -123,7 +122,7 @@ function addSubmitAction(dataObj) {
   });
 }
 
-// ===== bulk select =====
+
 function addBulkAction() {
   const selectAll = document.getElementById("select-all");
   const tbody = document.querySelector(".mytable tbody");
@@ -141,7 +140,7 @@ function addBulkAction() {
   });
 }
 
-// ===== البحث والفلترة =====
+
 const searchInput = document.getElementById("search");
 const dropdownItems = document.querySelectorAll(".dropdown-menu .dropdown-item");
 const dropdownLabel = document.querySelector(".filter-dropdown .fw-bold");
@@ -171,10 +170,9 @@ function applyFilters(selected = "") {
   activeCount.textContent = visibleCount;
 }
 
-// ===== أحداث البحث =====
 searchInput.addEventListener("input", () => applyFilters(dropdownLabel.textContent));
 
-// ===== أحداث dropdown =====
+
 dropdownItems.forEach((item) => {
   item.addEventListener("click", (e) => {
     e.preventDefault();
