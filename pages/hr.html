@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
@@ -15,52 +15,60 @@
   <!-- Bootswatch Dark Theme (Darkly) -->
   <!-- <link id="dark-theme" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/darkly/bootstrap.min.css" rel="stylesheet" > -->
 
-
 </head>
 
 <body>
-  <div class="container-fluid main mx-0">
+  <!-- nab bar  -->
+  <nav class="navbar navbar-expand-lg  position-fixed top-0  bg-body-tertiary border-bottom w-100 py-3 mb-5"
+    style="z-index: 10000;">
+    <div class="container-fluid">
+      <!-- Logo -->
+      <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+        <span class="logo">HR</span> Logo
+      </a>
 
-    <!-- Main Content -->
+      <!-- Center Search -->
+      <div class="col-6 col-lg-6 d-flex justify-content-center my-2 my-lg-0">
+        <form class="d-flex search w-75 w-md-50 w-lg-50" role="search">
+          <input class="form-control me-2 searchinput text-muted" id="search" type="search" placeholder="Search Here..."
+            aria-label="Search" />
+          <i class="fa-solid fa-magnifying-glass searchicon text-muted"></i>
+        </form>
+      </div>
 
-    <!-- nab bar  -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary border-bottom w-100 py-3">
-      <div class="container-fluid">
-        <!-- Logo -->
-        <a class="navbar-brand d-flex align-items-center gap-2" href="#">
-          <span class="logo">HR</span> Logo
+      <!-- Right Side (Profile + Settings + Dark Mode) -->
+      <div class="d-flex align-items-center ms-auto gap-3 flex-nowrap ">
+        <!-- Dark Mode -->
+        <button id="themeToggle">
+          <i class="fa-solid fa-moon fa-lg light-icon"></i>
+          <i class="fa-regular fa-sun fa-lg dark-icon d-none"></i>
+        </button>
+
+        <!-- Settings -->
+        <a href="#settings-section">
+          <i class="fa-solid fa-gear fa-lg"></i>
         </a>
 
-        <!-- Center Search -->
-        <div class="col-6 col-lg-6 d-flex justify-content-center my-2 my-lg-0">
-          <form class="d-flex search w-75 w-md-50 w-lg-50" role="search">
-            <input class="form-control me-2 searchinput text-muted" type="search" placeholder="Search Here..."
-              aria-label="Search" />
-            <i class="fa-solid fa-magnifying-glass searchicon text-muted"></i>
-          </form>
-        </div>
-
-        <!-- Right Side (Profile + Settings + Dark Mode) -->
-        <div class="d-flex align-items-center ms-auto gap-3 flex-nowrap ">
-          <!-- Dark Mode -->
-          <i id="toggleNight" class="fa-solid fa-moon fa-lg" style="cursor:pointer;"></i>
-
-          <!-- Settings -->
-          <a href="#settings-section">
-            <i class="fa-solid fa-gear text-muted fa-lg"></i>
-          </a>
-
-          <!-- Profile -->
-          <div class="d-flex align-items-center border-start ps-3 flex-shrink-0">
-            <div class="me-2 text-end">
-              <h6 class="mb-0">Admin</h6>
-              <small class="text-muted">admin123@gmail.com</small>
-            </div>
-            <img src="pic7.jpg" class="profilepic rounded-circle" alt="Profile" style="width:40px; height:40px;">
+        <!-- Profile -->
+        <div class="d-flex align-items-center border-start ps-3 flex-shrink-0">
+          <div class="me-2 text-end">
+            <h6 class="mb-0" id="admin-name"></h6>
+            <small class="" id="admin-uername">admin123@gmail.com</small>
           </div>
+          <img src="../assets/images/pic7.jpg" class="profilepic rounded-circle" alt="Profile"
+            style="width:40px; height:40px;">
+            <img
+        src="../assets/images/out.png"
+        class="out ms-3"
+        id="logout"
+      />
         </div>
       </div>
-    </nav>
+    </div>
+  </nav>
+  <div class="container-fluid main mx-0 ">
+
+    <!-- Main Content -->
 
     <!-- Toggle button for mobile
     <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
@@ -68,12 +76,8 @@
       <span class="navbar-toggler-icon"></span>
     </button> -->
 
-
-
-
-
     <!-- Page Content -->
-    <div class="container-fluid mainpage shadow-sm ">
+    <div class="container-fluid mainpage shadow-sm my-4 py-4">
       <!-- //dashboard title -->
       <div class="mx-4 px-2 my-4">
         <h4 class="">Dashboard</h4>
@@ -122,9 +126,6 @@
           </div>
         </div>
 
-
-
-
       </div>
 
       <!-- main container (table and employee card ) -->
@@ -161,7 +162,6 @@
                 </div>
                 <!-- end of the title and buttons  -->
 
-
                 <!-- table  -->
                 <div class="table-responsive">
 
@@ -184,9 +184,9 @@
                     </tbody>
                   </table>
 
-                 <!-- pagination -->
+                  <!-- pagination -->
 
-                  <nav aria-label="Page navigation example" class="d-flex justify-content-end">
+                  <nav aria-label="Page navigation example" class="d-flex justify-content-end pagination">
                     <ul class="pagination">
                       <li class="page-item">
                         <a class="page-link" href="#" aria-label="Previous">
@@ -203,9 +203,7 @@
                       </li>
                     </ul>
                   </nav>
-                 <!-- end of pagination -->
-
-
+                  <!-- end of pagination -->
 
                 </div>
               </div>
@@ -220,7 +218,7 @@
             <div class="card text-center shadow-sm mt-4">
               <div class="card-body ">
                 <h5 class="mb-3" style="color: rgb(49, 49, 49);"> Ideal Employee of the Month</h5>
-                <div id="idealEmployeeCard">
+                <div id="idealEmployeeCard" class="text-black">
                 </div>
               </div>
             </div>
@@ -232,7 +230,7 @@
       <!-- end of container  -->
 
       <!-- ******************************************************************************************** -->
-     
+
       <!-- container of tasks and permissions-->
       <div class="container-fluid my-4">
         <div class="row">
@@ -264,11 +262,11 @@
                       <!-- table data here from json  -->
                     </tbody>
                   </table>
-                 <!-- end of table  -->
+                  <!-- end of table  -->
                 </div>
 
                 <!-- pagination  -->
-                <nav aria-label="Page navigation example" class="d-flex justify-content-end">
+                <nav aria-label="Page navigation example" class="d-flex justify-content-end pagination">
                   <ul class="pagination">
                     <li class="page-item">
                       <a class="page-link" href="#" aria-label="Previous">
@@ -303,7 +301,7 @@
 
                 <div id="hr-permissions"></div>
                 <!-- pagination -->
-                <nav aria-label="Page navigation example" class="d-flex justify-content-end">
+                <nav aria-label="Page navigation example" class="d-flex justify-content-end pagination">
                   <ul class="pagination">
                     <li class="page-item">
                       <a class="page-link" href="#" aria-label="Previous">
@@ -321,8 +319,6 @@
                   </ul>
                 </nav>
 
-
-
               </div>
             </div>
 
@@ -331,12 +327,11 @@
         </div>
       </div>
 
-       <!-- end of row  -->
-<!-- *********************************************************************************************************************** -->
+      <!-- end of row  -->
+      <!-- *********************************************************************************************************************** -->
 
       <!-- setting panel  -->
       <div class="container my-5" id="settings-section">
-
 
         <h3 class="mb-3"><i class="fa-solid fa-gear mx-2 text-muted fa-lg"></i>HR Settings Panel</h3>
 
@@ -442,8 +437,6 @@
 
             </div>
 
-
-
           </div>
 
           <!-- General Config -->
@@ -474,20 +467,19 @@
             </div>
           </div>
 
-
-
-
         </div>
       </div>
 
     </div>
-
-
+    <button id="backToTop" title="Go to top">
+  <i class="fa-solid fa-arrow-up"></i>
+</button>
   </div>
 
   <script src="../js/bootstrap.bundle.min.js"></script>
   <script src="../js/all.min.js"></script>
   <script src="../js/admin.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 </body>
 
 </html>

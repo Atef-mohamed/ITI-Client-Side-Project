@@ -1,4 +1,3 @@
-
 //************************************************************************************************************ */
 
 // get data from json file
@@ -8,59 +7,67 @@ let attendanceData = [];
 let tasksData = [];
 let payrollsData = [];
 let permissionRequestsData = [];
-//fetch data 
+//fetch data
 fetch("../data.json")
-  .then(response => response.json())
-  .then(data => {
-
+  .then((response) => response.json())
+  .then((data) => {
     employeesData = data.employees;
     attendanceData = data.attendanceRecords;
     tasksData = data.tasks;
     payrollsData = data.monthlyPayrollImpacts;
     permissionRequestsData = data.permissionRequests;
 
-//render tables 
+    //render tables
     renderTable(employeesData, attendanceData, tasksData, payrollsData);
-    const idealEmps = findIdealEmployees(employeesData, attendanceData, tasksData, payrollsData, permissionRequestsData, "2025-08");
+    const idealEmps = findIdealEmployees(
+      employeesData,
+      attendanceData,
+      tasksData,
+      payrollsData,
+      permissionRequestsData,
+      "2025-08"
+    );
     renderIdealEmployeeCard(idealEmps);
-    
-    updateKPIs(employeesData, attendanceData , payrollsData);
+
+    updateKPIs(employeesData, attendanceData, payrollsData);
     renderTaskOversight(tasksData, employeesData);
     renderPermissionsOversight(permissionRequestsData, employeesData);
     renderPayrollDeductionsSummary(employeesData, payrollsData, "2025-08");
-
-
-
   })
-  .catch(error => console.error("Error loading JSON:", error));
+  .catch((error) => console.error("Error loading JSON:", error));
 
-
-// render employee table 
+// render employee table
 function renderTable(employees, attendance, tasks, payrolls) {
   const tabledata = document.getElementById("tabledata");
   tabledata.innerHTML = "";
 
-for (let i = 0; i < employees.length; i++) {
-  const emp = employees[i];
+  for (let i = 0; i < employees.length; i++) {
+    const emp = employees[i];
 
-  const empAttendance = attendance.find(a => a.employeeId === emp.id);
-  const status = empAttendance ? empAttendance.status.toLowerCase() : "N/A";
+    const empAttendance = attendance.find((a) => a.employeeId === emp.id);
+    const status = empAttendance ? empAttendance.status.toLowerCase() : "N/A";
 
-  const empTasks = tasks.filter(t => t.assignees.includes(emp.id));
-  const Tasks = empTasks.length;
-  const completedTasks = empTasks.filter(t => t.status === "Completed").length;
+    const empTasks = tasks.filter((t) => t.assignees.includes(emp.id));
+    const Tasks = empTasks.length;
+    const completedTasks = empTasks.filter(
+      (t) => t.status === "Completed"
+    ).length;
 
-  const payroll = payrolls.find(p => p.employeeId === emp.id && p.month === "2025-08");
-  const payrollImpact = payroll
-    ? (payroll.latePenalty + payroll.absencePenalty + payroll.taskPenalty)
-    : 0;
+    const payroll = payrolls.find(
+      (p) => p.employeeId === emp.id && p.month === "2025-08"
+    );
+    const payrollImpact = payroll
+      ? payroll.latePenalty + payroll.absencePenalty + payroll.taskPenalty
+      : 0;
 
-  const netSalary = payroll
-    ? emp.monthlySalary - (payroll.latePenalty + payroll.absencePenalty + payroll.taskPenalty) + (payroll.overtimePay + payroll.bonus)
-    : emp.monthlySalary;
+    const netSalary = payroll
+      ? emp.monthlySalary -
+        (payroll.latePenalty + payroll.absencePenalty + payroll.taskPenalty) +
+        (payroll.overtimePay + payroll.bonus)
+      : emp.monthlySalary;
 
-  const tr = document.createElement('tr');
-  tr.innerHTML = `
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
     <td>${emp.id}</td>
     <td>${emp.name}</td>
     <td class="text-center">${emp.department}</td>
@@ -70,81 +77,83 @@ for (let i = 0; i < employees.length; i++) {
     <td class="text-center">$${payrollImpact}</td>
     <td class="text-center">$${netSalary}</td>
   `;
-  tabledata.appendChild(tr);
-}
+    tabledata.appendChild(tr);
+  }
 }
 
-// cards kpis 
+// cards kpis
 function updateKPIs(employees, attendance, payrolls) {
-  let presentCount = 0, absentCount = 0, lateCount = 0, totalPayrollImpact = 0;
+  let presentCount = 0,
+    absentCount = 0,
+    lateCount = 0,
+    totalPayrollImpact = 0;
 
-  employees.forEach(emp => {
-    const empAttendance = attendance.find(a => a.employeeId === emp.id);
+  employees.forEach((emp) => {
+    const empAttendance = attendance.find((a) => a.employeeId === emp.id);
     const status = empAttendance ? empAttendance.status.toLowerCase() : "N/A";
 
     if (status === "present") presentCount++;
     else if (status === "absent") absentCount++;
     else if (status === "late") lateCount++;
 
-    const payroll = payrolls.find(p => p.employeeId === emp.id && p.month === "2025-08");
+    const payroll = payrolls.find(
+      (p) => p.employeeId === emp.id && p.month === "2025-08"
+    );
     const payrollImpact = payroll
-      ? (payroll.latePenalty + payroll.absencePenalty + payroll.taskPenalty)
+      ? payroll.latePenalty + payroll.absencePenalty + payroll.taskPenalty
       : 0;
 
     totalPayrollImpact += payrollImpact;
   });
-  
-  //attendence kpi 
+
+  //attendence kpi
   document.getElementById("attcard").innerHTML += `
-    <p class="card-text">✅ Present: ${presentCount}</p>
-    <p class="card-text">❌ Absent: ${absentCount}</p>
-    <p class="card-text">⏰ Late: ${lateCount}</p>
+    <p class="card-text">Present: ${presentCount}</p>
+    <p class="card-text">Absent: ${absentCount}</p>
+    <p class="card-text"Late: ${lateCount}</p>
   `;
-  //total employees kpi 
+  //total employees kpi
   document.getElementById("totalcard").innerHTML += `
     <p class="card-text display-6">${employees.length}</p>
   `;
- //payroll kpi 
+  //payroll kpi
   document.getElementById("payrollcard").innerHTML += `
     <p class="card-text display-6">$${totalPayrollImpact}</p>
   `;
 }
 
-
 //**************************************************/
 
-//sort table 
+//sort table
 const sorttable = document.getElementById("sortStatus");
 function tableSort() {
-
   let filteredEmployees = [];
   if (sorttable.value.toLowerCase() === "all") {
-
     filteredEmployees = employeesData;
-
   } else {
-    filteredEmployees = employeesData.filter(emp => {
-
-      const empAttendance = attendanceData.find(a => a.employeeId === emp.id);
-      return empAttendance && empAttendance.status.toLowerCase() === sorttable.value.toLowerCase()
+    filteredEmployees = employeesData.filter((emp) => {
+      const empAttendance = attendanceData.find((a) => a.employeeId === emp.id);
+      return (
+        empAttendance &&
+        empAttendance.status.toLowerCase() === sorttable.value.toLowerCase()
+      );
     });
-
   }
 
   renderTable(filteredEmployees, attendanceData, tasksData, payrollsData);
-
 }
 
 sorttable.addEventListener("change", tableSort);
 
-
-
-
 ///////********************************************8 */
 
-
-//ideal employee 
-function findIdealEmployees(employeesData, attendanceData, tasksData, permissionRequestsData) {
+//ideal employee
+function findIdealEmployees(
+  employeesData,
+  attendanceData,
+  tasksData,
+  permissionRequestsData
+) {
   let idealEmployees = [];
 
   for (let i = 0; i < employeesData.length; i++) {
@@ -203,7 +212,6 @@ function findIdealEmployees(employeesData, attendanceData, tasksData, permission
   return idealEmployees;
 }
 
-
 // ----------------- Render Ideal Employee Card -----------------
 function renderIdealEmployeeCard(idealEmployees) {
   const container = document.getElementById("idealEmployeeCard");
@@ -227,46 +235,60 @@ function renderIdealEmployeeCard(idealEmployees) {
   }
 }
 
-
 /////////////////******************************************* */
 
-//tasks 
+//tasks
 function renderTaskOversight(tasksData, employeesData) {
   const container = document.getElementById("hr-tasks");
   const taskscard = document.getElementById("taskkpi");
 
   let total = tasksData.length;
-  let completed = tasksData.filter(t => t.status === "Completed").length;
-  let onTime = tasksData.filter(t => t.status === "Completed" && !t.late).length;
+  let completed = tasksData.filter((t) => t.status === "Completed").length;
+  let onTime = tasksData.filter(
+    (t) => t.status === "Completed" && !t.late
+  ).length;
 
   taskscard.innerHTML += `
   <div class="kpis">
       <p>Total Tasks: ${total}</p>
-      <p>Completed: ${completed} (${((completed / total) * 100).toFixed(1)}%)</p>
+      <p>Completed: ${completed} (${((completed / total) * 100).toFixed(
+    1
+  )}%)</p>
       <p>On-time: ${onTime} (${((onTime / total) * 100).toFixed(1)}%)</p>
     </div>
   
-  `
+  `;
 
   container.innerHTML = `
     
-        ${tasksData.map(t => `
+        ${tasksData
+          .map(
+            (t) => `
           <tr>
             <td class="text-center" >${t.title}</td>
             <td class="text-center" >
-             ${t.assignees.map(id => {
-               let emp = employeesData.find(e => e.id === id);
-               if (emp) {return emp.name;} 
-               else {return "N/A";}}).join(", ")}
+             ${t.assignees
+               .map((id) => {
+                 let emp = employeesData.find((e) => e.id === id);
+                 if (emp) {
+                   return emp.name;
+                 } else {
+                   return "N/A";
+                 }
+               })
+               .join(", ")}
              </td>
             <td class="text-center" >${t.deadline}</td>
-            <td class="text-center" ><span class="status">${t.status}</span></td>
+            <td class="text-center" ><span class="status">${
+              t.status
+            }</span></td>
           </tr>
-        `).join("")}
+        `
+          )
+          .join("")}
      
   `;
 }
-
 
 //////***************************************/
 
@@ -286,27 +308,32 @@ function renderPermissionsOversight(permissionRequestsData, employeesData) {
         </tr>
       </thead>
       <tbody>
-        ${permissionRequestsData.map(p => `
+        ${permissionRequestsData
+          .map(
+            (p) => `
           <tr>
-            <td class="text-center">${employeesData.find(e => e.id === p.employeeId)?.name || "N/A"}</td>
+            <td class="text-center">${
+              employeesData.find((e) => e.id === p.employeeId)?.name || "N/A"
+            }</td>
             <td class="text-center">${p.type}</td>
             <td class="text-center">${p.payload.requestedDate}</td>
-            <td class="text-center"> <span class="status"> ${p.status} </span></td>
+            <td class="text-center"> <span class="status"> ${
+              p.status
+            } </span></td>
             
           </tr>
-        `).join("")}
+        `
+          )
+          .join("")}
       </tbody>
     </table>
     </div>
   `;
 }
 
-
 ////********************************************** */
 
-
-
-//setting panel 
+//setting panel
 
 // default values
 const defaultSettings = {
@@ -327,7 +354,7 @@ const defaultSettings = {
   // General
   cap: 25,
   bonus: 10,
-  workweekStart: "Sunday"
+  workweekStart: "Sunday",
 };
 
 // load settings on page load
@@ -353,8 +380,10 @@ function loadSettings() {
   document.querySelector("#overtime select").value = settings.overtimePolicy;
 
   // General
-  document.querySelector("#general input[placeholder='25']").value = settings.cap;
-  document.querySelector("#general input[placeholder='10']").value = settings.bonus;
+  document.querySelector("#general input[placeholder='25']").value =
+    settings.cap;
+  document.querySelector("#general input[placeholder='10']").value =
+    settings.bonus;
   document.querySelector("#general select").value = settings.workweekStart;
 }
 
@@ -365,7 +394,7 @@ function saveSettings() {
     late30: document.getElementById("late30").value,
     late60: document.getElementById("late60").value,
     late120: document.getElementById("late120").value,
-    absent: 100, // ثابتة
+    absent: 100,
     // Tasks
     low: document.getElementById("low-priority").value,
     medium: document.getElementById("medium-priority").value,
@@ -378,30 +407,128 @@ function saveSettings() {
     // General
     cap: document.querySelector("#general input[placeholder='25']").value,
     bonus: document.querySelector("#general input[placeholder='10']").value,
-    workweekStart: document.querySelector("#general select").value
+    workweekStart: document.querySelector("#general select").value,
   };
 
   localStorage.setItem("hrSettings", JSON.stringify(settings));
-  alert("✅ Settings saved successfully!");
+  alert("Settings saved successfully!");
 }
 
 // reset defaults
 function resetDefaults() {
   localStorage.setItem("hrSettings", JSON.stringify(defaultSettings));
   loadSettings();
-  alert("🔄 Settings reset to default!");
+  alert(" Settings reset to default!");
 }
 
 // attach events
-document.querySelectorAll("#saveSettings").forEach(btn => {
+document.querySelectorAll("#saveSettings").forEach((btn) => {
   btn.addEventListener("click", saveSettings);
 });
-document.querySelectorAll(".btn-secondary").forEach(btn => {
+document.querySelectorAll(".btn-secondary").forEach((btn) => {
   btn.addEventListener("click", resetDefaults);
 });
 
 // load when page starts
 window.onload = loadSettings;
+// search by name or id
+let searchInput = document.getElementById("search");
+searchInput.addEventListener("input", () => {
+  let searchTerm = searchInput.value.toLowerCase();
+  let filteredEmployees = employeesData.filter(
+    (emp) =>
+      emp.name.toLowerCase().includes(searchTerm) ||
+      emp.department.toLowerCase().includes(searchTerm)
+  );
+  renderTable(filteredEmployees, attendanceData, tasksData, payrollsData);
+});
+
+//handle Theme toggle
+document.addEventListener("DOMContentLoaded", () => {
+  const themeToggle = document.getElementById("themeToggle");
+  const root = document.documentElement;
+
+  // check saved theme or default = light
+  let savedTheme = localStorage.getItem("theme") || "light";
+
+  // apply saved theme
+  if (savedTheme === "dark") {
+    root.classList.add("dark");
+    themeToggle.querySelector(".light-icon").classList.add("d-none");
+    themeToggle.querySelector(".dark-icon").classList.remove("d-none");
+  } else {
+    root.classList.remove("dark");
+    themeToggle.querySelector(".light-icon").classList.remove("d-none");
+    themeToggle.querySelector(".dark-icon").classList.add("d-none");
+  }
+
+  // toggle theme on click
+  themeToggle.addEventListener("click", () => {
+    root.classList.toggle("dark");
+
+    if (root.classList.contains("dark")) {
+      localStorage.setItem("theme", "dark");
+      themeToggle.querySelector(".light-icon").classList.add("d-none");
+      themeToggle.querySelector(".dark-icon").classList.remove("d-none");
+    } else {
+      localStorage.setItem("theme", "light");
+      themeToggle.querySelector(".light-icon").classList.remove("d-none");
+      themeToggle.querySelector(".dark-icon").classList.add("d-none");
+    }
+  });
+});
+// display admin name and username
+let adminName = document.getElementById("admin-name");
+let adminUsername = document.getElementById("admin-uername");
+adminName.textContent = JSON.parse(localStorage.getItem("employee")).name;
+adminUsername.textContent = JSON.parse(
+  localStorage.getItem("employee")
+).username;
+
+// handle logout
+let logoutBtn = document.getElementById("logout");
+logoutBtn.addEventListener("click", () => {
+  swal({
+    title: "Are you sure?",
+    text: "Once Logout, you will not be able to show this page!",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+  }).then((willDelete) => {
+    if (willDelete) {
+      swal("you're logout now", {
+        icon: "success",
+      });
+      localStorage.removeItem("employee");
+      window.location.href = "login.html";
+    } else {
+      swal({
+        title: "You're still logged in!",
+        icon: "info",
+        buttons: false,
+        timer: 2000,
+        padding: "2em",
+      });
+    }
+  });
+});
 
 
+// handle back to top button
+  const backToTop = document.getElementById("backToTop");
+
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 200) {
+      backToTop.style.display = "block";
+    } else {
+      backToTop.style.display = "none";
+    }
+  });
+
+  backToTop.addEventListener("click", () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  });
 
