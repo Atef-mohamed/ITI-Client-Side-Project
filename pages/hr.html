@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 
 <head>
   <meta charset="UTF-8">
@@ -8,13 +8,483 @@
   <link rel="stylesheet" href="../css/bootstrap.min.css">
   <link rel="stylesheet" href="../css/all.min.css">
   <link rel="stylesheet" href="../css/admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <!-- Bootstrap Default -->
+  <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+
+  <!-- Bootswatch Dark Theme (Darkly) -->
+  <!-- <link id="dark-theme" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/darkly/bootstrap.min.css" rel="stylesheet" > -->
+
+
 </head>
 
 <body>
-  <h1 class="bg-danger">hellllllllllllllllllllllllllllllo</h1>
-  <h2>
-    <i class="fa-solid fa-user-gear"></i> admin
-  </h2>
+  <div class="container-fluid main mx-0">
+
+    <!-- Main Content -->
+
+    <!-- nab bar  -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary border-bottom w-100 py-3">
+      <div class="container-fluid">
+        <!-- Logo -->
+        <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+          <span class="logo">HR</span> Logo
+        </a>
+
+        <!-- Center Search -->
+        <div class="col-6 col-lg-6 d-flex justify-content-center my-2 my-lg-0">
+          <form class="d-flex search w-75 w-md-50 w-lg-50" role="search">
+            <input class="form-control me-2 searchinput text-muted" type="search" placeholder="Search Here..."
+              aria-label="Search" />
+            <i class="fa-solid fa-magnifying-glass searchicon text-muted"></i>
+          </form>
+        </div>
+
+        <!-- Right Side (Profile + Settings + Dark Mode) -->
+        <div class="d-flex align-items-center ms-auto gap-3 flex-nowrap ">
+          <!-- Dark Mode -->
+          <i id="toggleNight" class="fa-solid fa-moon fa-lg" style="cursor:pointer;"></i>
+
+          <!-- Settings -->
+          <a href="#settings-section">
+            <i class="fa-solid fa-gear text-muted fa-lg"></i>
+          </a>
+
+          <!-- Profile -->
+          <div class="d-flex align-items-center border-start ps-3 flex-shrink-0">
+            <div class="me-2 text-end">
+              <h6 class="mb-0">Admin</h6>
+              <small class="text-muted">admin123@gmail.com</small>
+            </div>
+            <img src="pic7.jpg" class="profilepic rounded-circle" alt="Profile" style="width:40px; height:40px;">
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Toggle button for mobile
+    <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+      aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button> -->
+
+
+
+
+
+    <!-- Page Content -->
+    <div class="container-fluid mainpage shadow-sm ">
+      <!-- //dashboard title -->
+      <div class="mx-4 px-2 my-4">
+        <h4 class="">Dashboard</h4>
+      </div>
+      <!-- cards -->
+      <!-- card 1 -->
+      <div class="row mt-4">
+        <div class="col-md-3">
+          <div class="card text-center shadow-sm card1 h-100 py-4">
+            <div class="card-body " id="totalcard">
+              <i class="fa-duotone fa-solid fa-user-group usersicon fa-xl"></i>
+              <h5 class="card-title">Total Employees</h5>
+              <!-- <p class="card-text display-6">120</p> -->
+            </div>
+          </div>
+        </div>
+
+        <!-- card2 -->
+        <div class="col-md-3">
+          <div class="card text-center shadow-sm card2 h-100">
+            <div class="card-body" id="attcard">
+              <i class="fa-regular fa-calendar-check fa-xl attendanceicon"></i>
+              <h5 class="card-title">Attendance overview </h5>
+
+            </div>
+          </div>
+        </div>
+        <!-- card3 -->
+        <div class="col-md-3">
+          <div class="card text-center shadow-sm card3 h-100">
+            <div class="card-body" id="taskkpi">
+              <i class="fa-solid fa-list-check fa-xl tasksicon"></i>
+              <h5 class="card-title">Tasks completed</h5>
+
+            </div>
+          </div>
+        </div>
+        <!-- card4 -->
+        <div class="col-md-3">
+          <div class="card text-center shadow-sm card4 h-100 py-4">
+            <div class="card-body" id="payrollcard">
+              <i class="fas fa-wallet me-2 payrollicon"></i>
+              <h5 class="card-title">Payroll impact </h5>
+              <!-- <p class="card-text display-6">$45K</p> -->
+            </div>
+          </div>
+        </div>
+
+
+
+
+      </div>
+
+      <!-- main container (table and employee card ) -->
+      <div class="container-fluid px-3">
+
+        <div class="row">
+          <div class="col-md-8  ">
+            <!-- empoloyees table  -->
+
+            <div class="card mt-4 tablecard">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center my-3 mx-3 flex-wrap gap-2">
+                  <h5 class="card-title">Employees Report</h5>
+                  <!-- div contain btn and sort -->
+                  <div class="ms-auto d-flex justify-content-center align-items-center">
+                    <!-- btn export -->
+                    <button type="button" class="btn btn-primary mx-2">Export PDF <i class="fa-solid fa-download"></i>
+                    </button>
+
+                    <!-- sort by  -->
+                    <div class="d-flex align-items-center mx-2 ">
+                      <select id="sortStatus" class="form-select w-auto ">
+                        <option value="" disabled selected hidden>Sorted by: status</option>
+                        <option value="all">All</option>
+                        <option value="present">Present</option>
+                        <option value="late">Late</option>
+                        <option value="absent">Absent</option>
+                      </select>
+                    </div>
+                    <!-- end of sorted by  -->
+
+                  </div>
+
+                </div>
+                <!-- end of the title and buttons  -->
+
+
+                <!-- table  -->
+                <div class="table-responsive">
+
+                  <table class="table align-middle">
+                    <thead class="tabletitle">
+                      <tr class="tablehead ">
+                        <th scope="col">Id</th>
+                        <th scope="col">Employee Name</th>
+                        <th scope="col">Department</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Tasks</th>
+                        <th scope="col">Tasks Completed </th>
+                        <th scope="col">Payroll Impact</th>
+                        <th scope="col">Net Salary</th>
+
+                      </tr>
+                    </thead>
+                    <tbody id="tabledata">
+                      <!-- data from json file -->
+                    </tbody>
+                  </table>
+
+                 <!-- pagination -->
+
+                  <nav aria-label="Page navigation example" class="d-flex justify-content-end">
+                    <ul class="pagination">
+                      <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Previous">
+                          <span aria-hidden="true">&laquo;</span>
+                        </a>
+                      </li>
+                      <li class="page-item active"><a class="page-link " href="#">1</a></li>
+                      <li class="page-item"><a class="page-link" href="#">2</a></li>
+                      <li class="page-item"><a class="page-link" href="#">3</a></li>
+                      <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                          <span aria-hidden="true">&raquo;</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </nav>
+                 <!-- end of pagination -->
+
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- end of col table -->
+
+          <!-- column of ideal employee card  -->
+          <div class="col-md-4">
+            <!-- here card  -->
+            <!-- ideal employee card  -->
+            <div class="card text-center shadow-sm mt-4">
+              <div class="card-body ">
+                <h5 class="mb-3" style="color: rgb(49, 49, 49);"> Ideal Employee of the Month</h5>
+                <div id="idealEmployeeCard">
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <!-- end of row -->
+      </div>
+      <!-- end of container  -->
+
+      <!-- ******************************************************************************************** -->
+     
+      <!-- container of tasks and permissions-->
+      <div class="container-fluid my-4">
+        <div class="row">
+
+          <!-- column of tasks card  -->
+          <div class="col-md-6">
+            <div class="card tablecard h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between my-3">
+
+                  <h5 class="card-title">Tasks Report</h5>
+                  <button type="button" class="btn btn-primary mx-2">Export PDF <i class="fa-solid fa-download"></i>
+                  </button>
+
+                </div>
+
+                <!-- table of tasks report -->
+                <div class="table-responsive">
+                  <table class="table align-middle">
+                    <thead class="tabletitle">
+                      <tr class="tablehead">
+                        <th scope="col">Task</th>
+                        <th scope="col">Employee</th>
+                        <th scope="col">Deadline</th>
+                        <th scope="col">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="hr-tasks">
+                      <!-- table data here from json  -->
+                    </tbody>
+                  </table>
+                 <!-- end of table  -->
+                </div>
+
+                <!-- pagination  -->
+                <nav aria-label="Page navigation example" class="d-flex justify-content-end">
+                  <ul class="pagination">
+                    <li class="page-item">
+                      <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                      </a>
+                    </li>
+                    <li class="page-item active"><a class="page-link " href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                      <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                      </a>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </div>
+
+          <!-- second column contains permission card  -->
+          <div class="col-md-6">
+            <div class="card tablecard h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between my-3">
+
+                  <h5 class="card-title">Permissions Report</h5>
+                  <button type="button" class="btn btn-primary mx-2">Export PDF <i class="fa-solid fa-download"></i>
+                  </button>
+
+                </div>
+
+                <div id="hr-permissions"></div>
+                <!-- pagination -->
+                <nav aria-label="Page navigation example" class="d-flex justify-content-end">
+                  <ul class="pagination">
+                    <li class="page-item">
+                      <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                      </a>
+                    </li>
+                    <li class="page-item active"><a class="page-link " href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                      <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                      </a>
+                    </li>
+                  </ul>
+                </nav>
+
+
+
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+       <!-- end of row  -->
+<!-- *********************************************************************************************************************** -->
+
+      <!-- setting panel  -->
+      <div class="container my-5" id="settings-section">
+
+
+        <h3 class="mb-3"><i class="fa-solid fa-gear mx-2 text-muted fa-lg"></i>HR Settings Panel</h3>
+
+        <!-- Tabs -->
+        <ul class="nav nav-tabs" id="settingsTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="attendance-tab" data-bs-toggle="tab" data-bs-target="#attendance"
+              type="button" role="tab">Attendance Penalties</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tasks-tab" data-bs-toggle="tab" data-bs-target="#tasks" type="button"
+              role="tab">Task Penalties</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="overtime-tab" data-bs-toggle="tab" data-bs-target="#overtime" type="button"
+              role="tab">Overtime Rules</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button"
+              role="tab">General Config</button>
+          </li>
+        </ul>
+
+        <!-- Tabs Content -->
+        <div class="tab-content border p-3" id="settingsTabsContent">
+
+          <!-- Attendance -->
+          <div class="tab-pane fade show active" id="attendance" role="tabpanel">
+            <div class="mb-3">
+              <label class="form-label">Late 16–30 min (%)</label>
+              <input type="number" class="form-control" placeholder="5" id="late30">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Late 31–60 min (%)</label>
+              <input type="number" class="form-control" placeholder="10" id="late60">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Late 61–120 min (%)</label>
+              <input type="number" class="form-control" placeholder="20" id="late120">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Absent</label>
+              <input type="text" class="form-control" value="100%" readonly id="absent">
+            </div>
+            <!-- Buttons -->
+            <div class="d-flex align-items-center justify-content-center my-4">
+
+              <button type="button" class="btn btn-primary mx-2" id="saveSettings">Save Changes</button>
+              <button type="button" class="btn btn-secondary mx-2">Reset default</button>
+
+            </div>
+          </div>
+
+          <!-- Task Penalties -->
+          <div class="tab-pane fade" id="tasks" role="tabpanel">
+            <div class="mb-3">
+              <label class="form-label">Low Priority (%)</label>
+              <input type="number" class="form-control" placeholder="5" id="low-priority">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Medium Priority (%)</label>
+              <input type="number" class="form-control" placeholder="8" id="medium-priority">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">High Priority (%)</label>
+              <input type="number" class="form-control" placeholder="12" id="high-priority">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Critical Priority (%)</label>
+              <input type="number" class="form-control" placeholder="20" id="critical-priority">
+            </div>
+
+            <div class="d-flex align-items-center justify-content-center my-4">
+
+              <button type="button" class="btn btn-primary mx-2" id="saveSettings">Save Changes</button>
+              <button type="button" class="btn btn-secondary mx-2">Reset default</button>
+
+            </div>
+          </div>
+
+          <!-- Overtime Rules -->
+          <div class="tab-pane fade" id="overtime" role="tabpanel">
+            <div class="mb-3">
+              <label class="form-label">Weekday Multiplier</label>
+              <input type="number" step="0.01" class="form-control" placeholder="1.25" id="weekday-multi">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Weekend Multiplier</label>
+              <input type="number" step="0.01" class="form-control" placeholder="1.5" id="weekend-multi">
+            </div>
+            <div class="mb-3" id="overtime">
+              <label class="form-label">Overtime Policy</label>
+              <select class="form-select">
+                <option value="pay">Pay</option>
+                <option value="Time-off">Time-off</option>
+              </select>
+            </div>
+            <!-- Buttons -->
+            <div class="d-flex align-items-center justify-content-center my-4">
+
+              <button type="button" class="btn btn-primary mx-2" id="saveSettings">Save Changes</button>
+              <button type="button" class="btn btn-secondary mx-2">Reset default</button>
+
+            </div>
+
+
+
+          </div>
+
+          <!-- General Config -->
+          <div class="tab-pane fade" id="general" role="tabpanel">
+            <div class="mb-3">
+              <label class="form-label">Monthly Deduction Cap (%)</label>
+              <input type="number" class="form-control" placeholder="25">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Ideal Employee Bonus (%)</label>
+              <input type="number" class="form-control" placeholder="10">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Workweek Start Day</label>
+              <select class="form-select">
+                <option>Sunday</option>
+                <option>Monday</option>
+                <option>Saturday</option>
+              </select>
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-flex align-items-center justify-content-center my-4">
+
+              <button type="button" class="btn btn-primary mx-2" id="saveSettings">Save Changes</button>
+              <button type="button" class="btn btn-secondary mx-2">Reset default</button>
+
+            </div>
+          </div>
+
+
+
+
+        </div>
+      </div>
+
+    </div>
+
+
+  </div>
+
   <script src="../js/bootstrap.bundle.min.js"></script>
   <script src="../js/all.min.js"></script>
   <script src="../js/admin.js"></script>
