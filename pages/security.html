@@ -14,57 +14,58 @@
   </head>
 
   <body>
-    <div class="container mt-3">
-      <div class="row align-items-center">
-        <div class="col-12 col-md-3 d-flex align-items-center">
-          <img
-            src="/ITI-Client-Side-Project/assets/images/Vector.png"
-            class="logo me-2"
-          />
-          <span>/ Security</span>
-        </div>
-        <div class="col-12 col-md-6">
-          <div class="position-relative">
-            <input
-              type="search"
-              id="search"
-              class="form-control rounded-pill ps-5"
-              placeholder="Search Here..."
-            />
-            <img
-              src="/ITI-Client-Side-Project/assets/images/search.png"
-              class="search position-absolute top-50 start-0 translate-middle-y ms-3"
-            />
-          </div>
-        </div>
+    <div class="container mt-3 ">
+     <div class="row align-items-center text-center text-md-start">
 
-        <div class="col-12 col-md-3 d-flex align-items-center">
-          <img
-            src="/ITI-Client-Side-Project/assets/images/Layer_1.png"
-            class="mode "
-          />
-          <div class="vr ms-1 me-1"></div>
-          <div class="d-flex align-items-center">
-            <div class="me-3">
-              <p class="adm mb-0 fw-bold">Admin</p>
-              <small class="text-muted ms-2">admin123@gmail.com</small>
-            </div>
-            <img
-              src="/ITI-Client-Side-Project/assets/images/8777756d6e503a6a7d6d946dcc6cf2aa6c058d6d.png"
-              class="admin rounded-circle"
-            />
-            <img
-              src="/ITI-Client-Side-Project/assets/images/out.png"
-              class="out ms-3"
-            />
-          </div>
-        </div>
+  <div class="col-12 col-md-3 d-flex align-items-center mb-2 order-1 order-md-1 justify-content-center justify-content-md-start">
+    <img
+      src="../assets/images/logo.png"
+      class="logo me-2"
+      style="width: 40px;"
+    />
+    <span>/ Security</span>
+  </div>
+
+  <div class="col-12 col-md-3 d-flex align-items-center mb-2 order-2 order-md-3 justify-content-center justify-content-md-end">
+    <img src="../assets/images/Layer_1.png" class="mode" />
+    <div class="vr ms-1 me-1 d-none d-md-block"></div>
+    <div class="d-flex align-items-center">
+      <div class="me-3  d-md-block">
+        <p class="adm mb-0 fw-bold" id="security-name"></p>
       </div>
+      <img
+        src="../assets/images/8777756d6e503a6a7d6d946dcc6cf2aa6c058d6d.png"
+        class="admin rounded-circle  d-md-inline"
+      />
+      <img
+        src="../assets/images/out.png"
+        class="out ms-3"
+        id="logout"
+      />
+    </div>
+  </div>
+
+  <div class="col-12 col-md-6 mb-2 order-3 order-md-2">
+    <div class="position-relative">
+      <input
+        type="search"
+        id="search"
+        class="form-control rounded-pill ps-5"
+        placeholder="Search Here..."
+      />
+      <img
+        src="../assets/images/search.png"
+        class="search position-absolute top-50 start-0 translate-middle-y ms-3"
+      />
+    </div>
+  </div>
+</div>
+
     </div>
     <hr />
     <div class="float-end me-5">Last seen: <span id="last-seen"></span></div>
     <br /><br />
-    <div class="container">
+    <div class="container-fluid" style="overflow-x: auto;">
       <div class="border border-1 rounded">
         <p class="ms-5 mt-3 fw-bold fs-5">Daily Employees</p>
 
