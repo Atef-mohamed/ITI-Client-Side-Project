@@ -1,4 +1,4 @@
-const modeImg = document.querySelector(".mode");
+let modeImg = document.querySelector(".mode");
 
 modeImg.addEventListener("click", () => {
   document.body.classList.toggle("dark-mode");
@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// ===== عرض الجدول =====
+
 function displayTable(employees, attendanceRecords) {
   let tbody = document.querySelector(".mytable tbody");
   tbody.innerHTML = "";
@@ -141,10 +141,13 @@ function addBulkAction() {
 }
 
 
-const searchInput = document.getElementById("search");
-const dropdownItems = document.querySelectorAll(".dropdown-menu .dropdown-item");
-const dropdownLabel = document.querySelector(".filter-dropdown .fw-bold");
-const activeCount = document.getElementById("activeCount");
+let searchInput = document.getElementById("search");
+let dropdownItems = document.querySelectorAll(".dropdown-menu .dropdown-item");
+let dropdownLabel = document.querySelector(".filter-dropdown .fw-bold");
+let activeCount = document.getElementById("activeCount");
+
+let nameOfSecurity = document.querySelector("#security-name");
+nameOfSecurity.textContent = JSON.parse(localStorage.getItem("employee")).name;
 
 function applyFilters(selected = "") {
   const term = searchInput.value.toLowerCase();
@@ -180,4 +183,11 @@ dropdownItems.forEach((item) => {
     dropdownLabel.textContent = selected;
     applyFilters(selected === "All" ? "" : selected);
   });
+});
+
+// handle logout
+let logoutBtn = document.getElementById("logout");
+logoutBtn.addEventListener("click", () => {
+  localStorage.removeItem("employee");
+  window.location.href = "login.html";
 });
