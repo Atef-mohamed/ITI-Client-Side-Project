@@ -94,4 +94,6 @@ loginButton.addEventListener("click", async (e) => {
 const employee = JSON.parse(localStorage.getItem("employee"));
 if (employee.role) {
   window.location.replace(`${employee.role.toLowerCase()}.html`);
+} else {
+  window.location.replace(`login.html`);
 }
