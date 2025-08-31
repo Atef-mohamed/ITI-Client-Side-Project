@@ -121,6 +121,19 @@ function updateKPIs(employees, attendance, payrolls) {
     <p class="card-text display-6">$${totalPayrollImpact}</p>
   `;
 }
+// Export Excel of employee Table
+document
+  .getElementById("btnExportEmployee")
+  .addEventListener("click", function () {
+    let table = document
+      .getElementById("employee-table")
+      .querySelector("table");
+    // Convert table to sheet
+    let wb = XLSX.utils.table_to_book(table, { sheet: "Employee Report" });
+    // save in pc
+    XLSX.writeFile(wb, "employee-report.xlsx");
+  });
+
 
 //**************************************************/
 
@@ -283,7 +296,9 @@ function renderTaskOversight(tasksData, employeesData) {
             <td class="text-center" >${t.deadline}</td>
 
 
-            <td class="text-center" ><span class="status ${t.status}">${t.status}</span></td>
+            <td class="text-center" ><span class="status ${t.status}">${
+              t.status
+            }</span></td>
 
           </tr>
         `
@@ -293,34 +308,37 @@ function renderTaskOversight(tasksData, employeesData) {
   `;
 }
 
-
-
-
-
+// Export Excel of Tasks Table
+document
+  .getElementById("btnExportTasks")
+  .addEventListener("click", function () {
+    let table = document
+      .getElementById("tasks-table");
+    // Convert table to sheet
+    let wb = XLSX.utils.table_to_book(table, { sheet: "Tasks Report" });
+    // save in pc
+    XLSX.writeFile(wb, "tasks-report.xlsx");
+  });
 
 // filtered table
 const sortedtask = document.getElementById("sortTask");
 
 function filterTasks() {
-  let selected = sortedtask.value.toLowerCase(); 
+  let selected = sortedtask.value.toLowerCase();
   let filteredTasks = [];
 
   if (selected === "all") {
     filteredTasks = tasksData;
   } else {
-    filteredTasks = tasksData.filter(task => 
-      task.status.trim().toLowerCase() === selected
+    filteredTasks = tasksData.filter(
+      (task) => task.status.trim().toLowerCase() === selected
     );
   }
 
   renderTaskOversight(filteredTasks, employeesData);
-
 }
 
 sortedtask.addEventListener("change", filterTasks);
-
-
-
 
 //////***************************************/
 
@@ -350,7 +368,9 @@ function renderPermissionsOversight(permissionRequestsData, employeesData) {
             <td class="text-center">${p.type}</td>
             <td class="text-center">${p.payload.requestedDate}</td>
 
-            <td class="text-center"> <span class="status ${p.status}"> ${p.status} </span></td>
+            <td class="text-center"> <span class="status ${p.status}"> ${
+              p.status
+            } </span></td>
 
             
           </tr>
@@ -362,7 +382,18 @@ function renderPermissionsOversight(permissionRequestsData, employeesData) {
     </div>
   `;
 }
-
+// Export Excel of Permision Table
+document
+  .getElementById("btnExportPermision")
+  .addEventListener("click", function () {
+    let table = document
+      .getElementById("hr-permissions")
+      .querySelector("table");
+    // Convert table to sheet
+    let wb = XLSX.utils.table_to_book(table, { sheet: "Permissions Report" });
+    // save in pc
+    XLSX.writeFile(wb, "permissions-report.xlsx");
+  });
 
 
 //filtering
@@ -373,19 +404,17 @@ function filterPermissions() {
   let filteredPermissions = [];
 
   if (selected === "all") {
-    filteredPermissions = permissionRequestsData; 
+    filteredPermissions = permissionRequestsData;
   } else {
-    filteredPermissions = permissionRequestsData.filter(request => 
-      request.status.trim().toLowerCase() === selected
+    filteredPermissions = permissionRequestsData.filter(
+      (request) => request.status.trim().toLowerCase() === selected
     );
   }
 
-  renderPermissionsOversight(filteredPermissions, employeesData); 
+  renderPermissionsOversight(filteredPermissions, employeesData);
 }
 
 sortedPermission.addEventListener("change", filterPermissions);
-
-
 
 ////********************************************** */
 
@@ -453,7 +482,6 @@ function saveSettings() {
 
     absent: 100,
 
-   
     // Tasks
     low: document.getElementById("low-priority").value,
     medium: document.getElementById("medium-priority").value,
@@ -594,9 +622,6 @@ logoutBtn.addEventListener("click", () => {
   });
 });
 
-
-
-
 // handle back to top button
 const backToTop = document.getElementById("backToTop");
 
@@ -614,4 +639,3 @@ backToTop.addEventListener("click", () => {
     behavior: "smooth",
   });
 });
-

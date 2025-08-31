@@ -58,11 +58,7 @@
           </div>
           <img src="../assets/images/pic7.jpg" class="profilepic rounded-circle" alt="Profile"
             style="width:40px; height:40px;">
-            <img
-        src="../assets/images/out.png"
-        class="out ms-3"
-        id="logout"
-      />
+          <img src="../assets/images/out.png" class="out ms-3" id="logout" />
         </div>
       </div>
     </div>
@@ -143,7 +139,8 @@
                   <!-- div contain btn and sort -->
                   <div class="ms-auto d-flex justify-content-center align-items-center">
                     <!-- btn export -->
-                    <button type="button" class="btn btn-primary mx-2">Export PDF <i class="fa-solid fa-download"></i>
+                    <button type="button" class="btn btn-primary mx-2" id="btnExportEmployee">Export PDF <i
+                        class="fa-solid fa-download"></i>
                     </button>
 
                     <!-- sort by  -->
@@ -153,6 +150,7 @@
                         <option value="all">All</option>
                         <option value="present">Present</option>
                         <option value="late">Late</option>
+                        <option value="wfh">Wfh</option>
                         <option value="absent">Absent</option>
                       </select>
                     </div>
@@ -164,7 +162,7 @@
                 <!-- end of the title and buttons  -->
 
                 <!-- table  -->
-                <div class="table-responsive">
+                <div class="table-responsive" id="employee-table">
 
                   <table class="table align-middle">
                     <thead class="tabletitle">
@@ -246,7 +244,7 @@
                   <!-- div contain btn and sort -->
                   <div class="ms-auto d-flex justify-content-center align-items-center">
                     <!-- btn export -->
-                    <button type="button" class="btn btn-primary mx-2">Export PDF <i class="fa-solid fa-download"></i>
+                    <button type="button" class="btn btn-primary mx-2" id="btnExportTasks">Export PDF <i class="fa-solid fa-download"></i>
                     </button>
 
                     <!-- sort by  -->
@@ -267,7 +265,7 @@
 
                 <!-- table of tasks report -->
                 <div class="table-responsive">
-                  <table class="table align-middle">
+                  <table class="table align-middle" id="tasks-table">
                     <thead class="tabletitle">
                       <tr class="tablehead">
                         <th scope="col">Task</th>
@@ -312,10 +310,10 @@
                 <div class="d-flex align-items-center justify-content-between my-3  mx-3 flex-wrap gap-2">
 
                   <h5 class="card-title">Permissions Report</h5>
-                 <!-- div contain btn and sort -->
+                  <!-- div contain btn and sort -->
                   <div class="ms-auto d-flex justify-content-center align-items-center">
                     <!-- btn export -->
-                    <button type="button" class="btn btn-primary mx-2">Export PDF <i class="fa-solid fa-download"></i>
+                    <button type="button" class="btn btn-primary mx-2" id="btnExportPermision">Export PDF <i class="fa-solid fa-download"></i>
                     </button>
 
                     <!-- sort by  -->
@@ -326,7 +324,7 @@
                         <option value="approved">Approved</option>
                         <option value="pending">Pending</option>
                         <option value="rejected">Rejected</option>
-                        
+
                       </select>
                     </div>
                     <!-- end of sorted by  -->
@@ -507,14 +505,14 @@
 
     </div>
     <button id="backToTop" title="Go to top">
-  <i class="fa-solid fa-arrow-up"></i>
-</button>
+      <i class="fa-solid fa-arrow-up"></i>
+    </button>
   </div>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
   <script src="../js/bootstrap.bundle.min.js"></script>
   <script src="../js/all.min.js"></script>
   <script src="../js/admin.js"></script>
-  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 </body>
 
 </html>
