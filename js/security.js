@@ -1,9 +1,17 @@
-let modeImg = document.querySelector(".mode");
+// =====================
+// Dark/Light Mode Toggle
+// =====================
+const modeIcon = document.getElementById("themeToggle");
 
-modeImg.addEventListener("click", () => {
+modeIcon.addEventListener("click", () => {
   document.body.classList.toggle("dark-mode");
+  modeIcon.classList.toggle("fa-sun");
+  modeIcon.classList.toggle("fa-moon");
 });
 
+// =====================
+// Page Initialization
+// =====================
 document.addEventListener("DOMContentLoaded", () => {
   let today = new Date();
   let formattedDate =
@@ -30,7 +38,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-
+// =====================
+// Display Attendance Table
+// =====================
 function displayTable(employees, attendanceRecords) {
   let tbody = document.querySelector(".mytable tbody");
   tbody.innerHTML = "";
@@ -41,11 +51,21 @@ function displayTable(employees, attendanceRecords) {
     let record = attendanceRecords.find(
       (r) => r.employeeId === emp.id && r.date === today
     );
-    // console.log(record);
-    
+
     let row = document.createElement("tr");
     row.dataset.leave = record?.isLeave;
     row.dataset.wfh = record?.isWFH;
+
+    let checkoutValue = record?.checkOut || "";
+
+    // Auto-checkout only for valid leave (not absent)
+    if (
+      record?.isLeave &&
+      !record?.notes?.toLowerCase().includes("absent") &&
+      !record.checkOut
+    ) {
+      checkoutValue = "17:00";
+    }
 
     row.innerHTML = `
       <td><input type="checkbox" class="row-select"/></td>
@@ -56,24 +76,24 @@ function displayTable(employees, attendanceRecords) {
       <td><input type="time" class="checkin text-center ps-4" value="${
         record?.checkIn || ""
       }" disabled></td>
-      <td><input type="time" class="checkout text-center ps-4" value="${
-        record?.checkOut || ""
-      }" disabled></td>
+      <td><input type="time" class="checkout text-center ps-4" value="${checkoutValue}" disabled></td>
       <td>${record?.notes || ""}</td>
     `;
     tbody.appendChild(row);
 
+    // Update status logic
     row.updateStatus = function () {
       let statusCell = row.querySelector(".status");
       let checkInInput = row.querySelector(".checkin");
       let onLeave = row.dataset.leave === "true";
       let wfh = row.dataset.wfh === "true";
       let time = checkInInput.value;
+      let notes = row.children[7].textContent.trim().toLowerCase();
 
       if (wfh) {
         statusCell.textContent = "Present (WFH)";
         statusCell.className = "status present";
-      } else if (onLeave) {
+      } else if (onLeave && notes && !notes.includes("absent")) {
         statusCell.textContent = "Leave";
         statusCell.className = "status leave";
       } else if (!time || time > "11:00") {
@@ -87,9 +107,10 @@ function displayTable(employees, attendanceRecords) {
         statusCell.className = "status present";
       }
     };
+
     row.updateStatus();
 
-    // checkbox enable/disable
+    // Enable/disable time inputs with checkbox
     let checkbox = row.querySelector(".row-select");
     checkbox.addEventListener("change", () => {
       let checkinInput = row.querySelector(".checkin");
@@ -100,6 +121,9 @@ function displayTable(employees, attendanceRecords) {
   });
 }
 
+// =====================
+// Submit Button Action
+// =====================
 function addSubmitAction(dataObj) {
   const submitBtn = document.getElementById("submit-btn");
   const tbody = document.querySelector(".mytable tbody");
@@ -123,6 +147,9 @@ function addSubmitAction(dataObj) {
           record.checkOut = checkOut;
           record.status = status;
         }
+        checkbox.checked = false;
+        row.querySelector(".checkin").disabled = true;
+        row.querySelector(".checkout").disabled = true;
       }
     });
 
@@ -131,6 +158,9 @@ function addSubmitAction(dataObj) {
   });
 }
 
+// =====================
+// Bulk Action (Select All)
+// =====================
 function addBulkAction() {
   const selectAll = document.getElementById("select-all");
   const tbody = document.querySelector(".mytable tbody");
@@ -148,14 +178,23 @@ function addBulkAction() {
   });
 }
 
+// =====================
+// Filters & Search
+// =====================
 let searchInput = document.getElementById("search");
 let dropdownItems = document.querySelectorAll(".dropdown-menu .dropdown-item");
 let dropdownLabel = document.querySelector(".filter-dropdown .fw-bold");
 let activeCount = document.getElementById("activeCount");
 
+// Display security user info
 let nameOfSecurity = document.querySelector("#security-name");
+let userOfSecurity = document.querySelector("#security-user");
 nameOfSecurity.textContent = JSON.parse(localStorage.getItem("employee")).name;
+userOfSecurity.textContent = JSON.parse(
+  localStorage.getItem("employee")
+).username;
 
+// Apply filters (search + dropdown)
 function applyFilters(selected = "") {
   const term = searchInput.value.toLowerCase();
   const rows = document.querySelectorAll(".mytable tbody tr");
@@ -193,7 +232,35 @@ dropdownItems.forEach((item) => {
   });
 });
 
-// handle logout
+// =====================
+// Navbar Search
+// =====================
+const navbarSearch = document.getElementById("search");
+
+if (navbarSearch) {
+  navbarSearch.addEventListener("input", () => {
+    const term = navbarSearch.value.toLowerCase();
+    let visibleCount = 0;
+
+    document.querySelectorAll(".mytable tbody tr").forEach((row) => {
+      const id = row.children[1].textContent.toLowerCase();
+      const name = row.children[2].textContent.toLowerCase();
+
+      if (id.includes(term) || name.includes(term)) {
+        row.style.display = "";
+        visibleCount++;
+      } else {
+        row.style.display = "none";
+      }
+    });
+
+    activeCount.textContent = visibleCount;
+  });
+}
+
+// =====================
+// Logout Handler
+// =====================
 let logoutBtn = document.getElementById("logout");
 logoutBtn.addEventListener("click", () => {
   const isLoggedIn = localStorage.getItem("employee");
@@ -239,4 +306,3 @@ logoutBtn.addEventListener("click", () => {
     }
   });
 });
-
