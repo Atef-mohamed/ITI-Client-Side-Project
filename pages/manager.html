@@ -1,23 +1,332 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>manager</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Manager Module</title>
+
   <link rel="stylesheet" href="../css/bootstrap.min.css">
   <link rel="stylesheet" href="../css/all.min.css">
   <link rel="stylesheet" href="../css/manager.css">
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+
 </head>
 
 <body>
-  <h1 class="bg-danger">hellllllllllllllllllllllllllllllo</h1>
-  <h2>
-    <i class="fa-solid fa-user-tie"></i> manager
-  </h2>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg border-bottom border-secondary sticky-top px-5 ">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold" href="#"><i class="bi bi-person-square me-2"></i>Manager Control Center</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topnav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div id="topnav" class="collapse navbar-collapse">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link active " data-page="approvals" href="#">Approvals Queue</a>
+          </li>
+          <li class="nav-item"><a class="nav-link" data-page="attendance" href="#">Team Attendance</a></li>
+          <li class="nav-item"><a class="nav-link" data-page="tasks" href="#">Team Tasks</a></li>
+          <li class="nav-item"><a class="nav-link" data-page="reports" href="#">Reports</a></li>
+        </ul>
+        <div class="d-flex align-items-center gap-2">
+
+          <button class="btn btn-outline-info btn-sm" id="seedBtn"><i class="bi bi-database-add me-1"></i>Seed
+            Demo Data</button>
+          <button class="btn btn-outline-warning btn-sm" id="resetBtn"><i class="bi bi-recycle me-1"></i>Reset</button>
+          <button id="themeToggle" class="btn">🌙</button>
+
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container my-4">
+
+    <section id="page-approvals">
+      <div class="d-flex align-items-center justify-content-between mb-3 row">
+        <h4 class="mb-3 me-3 text-center text-md-start col-md-3">Approvals Queue</h4>
+
+        <div class="search-background mb-3 p-2 rounded-4 shadow-sm ms-auto me-auto ms-md-0 me-md-auto w-100 col-md-4"
+          style="max-width: 250px; max-height: 50px;">
+          <div class="input-group input-group-sm">
+            <span class="input-group-text bg-transparent border-0">
+              <i class="bi bi-search"></i>
+            </span>
+            <input id="searchRequests" class="form-control border-0 bg-transparent"
+              placeholder=" Search by name/reason..." />
+          </div>
+        </div>
+
+        <div class="btn-group col-md-5" role="group"> <button class="btn btn-outline-secondary btn-sm"
+            data-filter="All">All</button> <button class="btn btn-outline-secondary btn-sm"
+            data-filter="Late">Late</button> <button class="btn btn-outline-secondary btn-sm"
+            data-filter="Absence">Absence</button> <button class="btn btn-outline-secondary btn-sm"
+            data-filter="WFH">WFH</button> <button class="btn btn-outline-secondary btn-sm"
+            data-filter="Overtime">Overtime</button> <button class="btn btn-outline-secondary btn-sm"
+            data-filter="DeadlineExtension">DeadlineExtension</button> </div>
+      </div>
+      <div class="card shadow-soft rounded-2xl">
+        <div class="card-body p-3 ">
+          <div class="d-flex gap-2 mb-2"> <button id="btnApproveSelected" class="btn btn-success btn-sm"><i
+                class="bi bi-check2-circle me-1"></i>Approve Selected</button> <button id="btnRejectSelected"
+              class="btn btn-danger btn-sm"><i class="bi bi-x-circle me-1"></i>Reject Selected</button>
+          </div>
+          <div class="table-responsive scroll-y">
+            <table class="table align-middle table-hover" id="requestsTable">
+              <thead class="sticky-top ">
+                <tr>
+                  <th style="width:40px"><input type="checkbox" id="selectAllRequests" /></th>
+                  <th>#</th>
+                  <th>Employee</th>
+                  <th>Type</th>
+                  <th>Requested Date</th>
+                  <th>Details</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Attendance Page -->
+    <section id="page-attendance" class="d-none">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h4 class="mb-0">Team Attendance</h4>
+        <div class="d-flex gap-2">
+          <input type="date" id="attFrom" class="form-control form-control-sm" />
+          <input type="date" id="attTo" class="form-control form-control-sm" />
+          <button class="btn btn-primary btn-sm" id="btnFilterAtt"><i class="bi bi-funnel me-1"></i>Filter</button>
+        </div>
+      </div>
+
+      <div class="row g-3 mb-3">
+        <div class="col-md-8">
+          <div class="card p-3 shadow-soft rounded-2xl">
+            <h6 class="text-secondary">Attendance Table</h6>
+            <div class="table-responsive scroll-y">
+              <table class="table align-middle" id="attendanceTable">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Employee</th>
+                    <th>Check-In</th>
+                    <th>Check-Out</th>
+                    <th>Status</th>
+                    <th>Minutes Late</th>
+                    <th>WFH</th>
+                    <th>Leave</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card p-3 shadow-soft rounded-2xl mb-3">
+            <h6 class="text-secondary">Counters (This Range)</h6>
+            <ul class="list-group list-group-flush ">
+              <li class="list-group-item bg-transparent text-secondary  d-flex justify-content-between">
+                <span>Late</span><span id="lateCount">0</span>
+              </li>
+              <li class="list-group-item bg-transparent text-secondary  d-flex justify-content-between">
+                <span>Absent</span><span id="absentCount">0</span>
+              </li>
+              <li class="list-group-item bg-transparent text-secondary  d-flex justify-content-between">
+                <span>WFH</span><span id="wfhCount">0</span>
+              </li>
+              <li class="list-group-item bg-transparent text-secondary  d-flex justify-content-between">
+                <span>Leave</span><span id="leaveCount">0</span>
+              </li>
+            </ul>
+          </div>
+          <div class="card p-3 shadow-soft rounded-2xl">
+            <h6 class="text-secondary">Calendar Heatmap (sample)</h6>
+            <div id="heatmap" class="d-flex flex-wrap gap-1"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tasks Page -->
+    <section id="page-tasks" class="d-none">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h4 class="mb-0">Team Tasks</h4>
+        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal"><i
+            class="bi bi-plus-circle me-1"></i>New Task</button>
+      </div>
+
+      <div class="row g-3 mb-3">
+        <div class="col-md-8">
+          <div class="kanban" id="kanban">
+            <div class="kanban-col" data-status="Pending">
+              <h6>To Do</h6>
+              <div class="kanban-list" id="col-Pending"></div>
+            </div>
+            <div class="kanban-col" data-status="Ongoing">
+              <h6>In Progress</h6>
+              <div class="kanban-list" id="col-Ongoing"></div>
+            </div>
+            <div class="kanban-col" data-status="Missed">
+              <h6>Missed</h6>
+              <div class="kanban-list" id="col-Missed"></div>
+            </div>
+            <div class="kanban-col" data-status="Completed">
+              <h6>Done</h6>
+              <div class="kanban-list" id="col-Completed"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card p-3 shadow-soft rounded-2xl mb-3">
+            <h6 class="text-secondary">Needs Attention (Overdue)</h6>
+            <div id="overdueList" class="scroll-y" style="max-height:220px"></div>
+          </div>
+          <div class="card p-3 shadow-soft rounded-2xl">
+            <h6 class="text-secondary">Deadline Extensions</h6>
+            <div id="extRequests" class="scroll-y" style="max-height:260px"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reports Page -->
+    <section id="page-reports" class="d-none">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h4 class="mb-0">Team Reports</h4>
+        <div class="btn-group">
+          <button class="btn btn-outline-info btn-sm" id="exportAttendanceCsv"><i
+              class="bi bi-filetype-csv me-1"></i>Attendance CSV</button>
+          <button class="btn btn-outline-info btn-sm" id="exportTasksCsv"><i class="bi bi-filetype-csv me-1"></i>Tasks
+            CSV</button>
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-md-3">
+          <div class="kpi p-3 shadow-soft rounded-2xl text-center">
+            <div class="small text-secondary">Late (This Month)</div>
+            <div id="kpiLate" class="display-6">0</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="kpi p-3 shadow-soft rounded-2xl text-center">
+            <div class="small text-secondary">Absences (This Month)</div>
+            <div id="kpiAbsent" class="display-6">0</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="kpi p-3 shadow-soft rounded-2xl text-center">
+            <div class="small text-secondary">Overtime Hours (Approved)</div>
+            <div id="kpiOT" class="display-6">0</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="kpi p-3 shadow-soft rounded-2xl text-center">
+            <div class="small text-secondary">Tasks: On-time %</div>
+            <div id="kpiOnTime" class="display-6">0%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-3 p-3 shadow-soft rounded-2xl">
+        <h6 class="text-secondary">Task Completion by Member</h6>
+        <div class="table-responsive">
+          <table class="table align-middle" id="reportTasksTable">
+            <thead>
+              <tr>
+                <th>Employee</th>
+                <th>Completed</th>
+                <th>Overdue</th>
+                <th>On-time %</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Task Modal -->
+  <div class="modal fade" id="taskModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Create / Edit Task</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="taskForm" class="row g-3">
+            <input type="hidden" id="taskId" />
+            <div class="col-md-6">
+              <label class="form-label">Title</label>
+              <input class="form-control" id="taskTitle" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Priority</label>
+              <select id="taskPriority" class="form-select">
+                <option>Low</option>
+                <option>Medium</option>
+                <option>High</option>
+                <option>Critical</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Description</label>
+              <textarea class="form-control" id="taskDesc" rows="3"></textarea>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Deadline</label>
+              <input type="datetime-local" class="form-control" id="taskDeadline" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Assignees</label>
+              <select id="taskAssignees" class="form-select" multiple></select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button id="saveTaskBtn" class="btn btn-primary">Save Task</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reject Modal -->
+  <div class="modal fade" id="rejectModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Reject Request</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <label class="form-label">Comment (required)</label>
+          <textarea id="rejectComment" class="form-control" rows="3" placeholder="Provide reason..."></textarea>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button id="confirmRejectBtn" class="btn btn-danger">Reject</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <footer class="text-center text-secondary small my-4">Manager Module v1</footer> -->
+
   <script src="../js/bootstrap.bundle.min.js"></script>
   <script src="../js/all.min.js"></script>
   <script src="../js/manager.js"></script>
+
 </body>
+
 
 </html>
