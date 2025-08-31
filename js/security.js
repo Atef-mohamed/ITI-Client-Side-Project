@@ -2,7 +2,7 @@ let modeImg = document.querySelector(".mode");
 
 modeImg.addEventListener("click", () => {
   document.body.classList.toggle("dark-mode");
-});
+}); 
 
 document.addEventListener("DOMContentLoaded", () => {
   let today = new Date();
@@ -10,52 +10,76 @@ document.addEventListener("DOMContentLoaded", () => {
     today.getDate() + "-" + (today.getMonth() + 1) + "-" + today.getFullYear();
   document.getElementById("last-seen").innerText = formattedDate;
 
+
   let savedData = localStorage.getItem("attendanceData");
   if (savedData) {
     let parsed = JSON.parse(savedData);
     displayTable(parsed.employees, parsed.attendanceRecords);
     addBulkAction();
-    addSubmitAction(parsed);
+    addSubmitAction(data);
     applyFilters("");
+  };
+
+  // Check if data exists in localStorage, otherwise fetch JSON
+  const savedData = localStorage.getItem("attendanceData");
+  if (savedData) {
+    loadData(JSON.parse(savedData));
   } else {
     fetch("../data.json")
-      .then((response) => response.json())
-      .then((data) => {
-        displayTable(data.employees, data.attendanceRecords);
-        addBulkAction();
-        addSubmitAction(data);
-        applyFilters("");
-      })
+      .then((res) => res.json())
+      .then(loadData)
       .catch((err) => console.error("Error loading JSON:", err));
   }
 });
+
 
 function displayTable(employees, attendanceRecords) {
   let tbody = document.querySelector(".mytable tbody");
   tbody.innerHTML = "";
 
-  employees.forEach((emp) => {
-    let record = attendanceRecords.find((r) => r.employeeId === emp.id);
-    let row = document.createElement("tr");
-    row.dataset.leave = record?.isLeave;
-    row.dataset.wfh = record?.isWFH;
+    employees.forEach((emp) => {
+      // Find today's attendance record for this employee
+      let record = attendanceRecords.find((r) => {
+        if (!r.date) return false;
+        const recDateObj = new Date(r.date);
+        return (
+          r.employeeId === emp.id &&
+          recDateObj.getFullYear() === todayObj.getFullYear() &&
+          recDateObj.getMonth() === todayObj.getMonth() &&
+          recDateObj.getDate() === todayObj.getDate()
+        );
+      });
 
-    row.innerHTML = `
-      <td><input type="checkbox" class="row-select"/></td>
+      // If no record found, set default as Absent
+      if (!record) {
+        record = {
+          checkIn: "",
+          checkOut: "",
+          status: "Absent",
+          isWFH: false,
+          isLeave: false,
+          notes: "",
+        };
+      }
+
+      const row = document.createElement("tr");
+      row.dataset.leave = record.isLeave;
+      row.dataset.wfh = record.isWFH;
+
+      // Populate row HTML
+      row.innerHTML = `
+      <td><input type="checkbox" class="row-select"></td>
       <td>${emp.id}</td>
       <td>${emp.name}</td>
       <td>${emp.department}</td>
       <td><span class="status badge bg-secondary"></span></td>
-      <td><input type="time" class="checkin text-center ps-4" value="${
-        record?.checkIn || ""
-      }" disabled></td>
-      <td><input type="time" class="checkout text-center ps-4" value="${
-        record?.checkOut || ""
-      }" disabled></td>
+      <td><input type="time" class="checkin text-center ps-4" value="${record?.checkIn || ""}" disabled></td>
+      <td><input type="time" class="checkout text-center ps-4" value="${record?.checkOut || ""}" disabled></td>
       <td>${record?.notes || ""}</td>
     `;
     tbody.appendChild(row);
 
+    
     row.updateStatus = function () {
       let statusCell = row.querySelector(".status");
       let checkInInput = row.querySelector(".checkin");
@@ -82,6 +106,7 @@ function displayTable(employees, attendanceRecords) {
     };
     row.updateStatus();
 
+   
     let checkbox = row.querySelector(".row-select");
     checkbox.addEventListener("change", () => {
       let checkinInput = row.querySelector(".checkin");
@@ -92,24 +117,22 @@ function displayTable(employees, attendanceRecords) {
   });
 }
 
+
 function addSubmitAction(dataObj) {
   const submitBtn = document.getElementById("submit-btn");
   const tbody = document.querySelector(".mytable tbody");
 
-  submitBtn.addEventListener("click", () => {
-    let selectedRows = tbody.querySelectorAll("tr");
-    selectedRows.forEach((row) => {
-      let checkbox = row.querySelector("input.row-select");
-      if (checkbox.checked) {
-        row.updateStatus();
-        let empId = parseInt(row.children[1].textContent);
-        let checkIn = row.querySelector(".checkin").value;
-        let checkOut = row.querySelector(".checkout").value;
-        let status = row.querySelector(".status").textContent;
+    submitBtn.addEventListener("click", () => {
+      tbody.querySelectorAll("tr").forEach((row) => {
+        const checkbox = row.querySelector(".row-select");
+        if (checkbox.checked) {
+          row.updateStatus();
+          const empId = parseInt(row.children[1].textContent);
+          const checkIn = row.querySelector(".checkin").value;
+          const checkOut = row.querySelector(".checkout").value;
+          const status = row.querySelector(".status").textContent;
 
-        let record = dataObj.attendanceRecords.find(
-          (r) => r.employeeId === empId
-        );
+        let record = dataObj.attendanceRecords.find((r) => r.employeeId === empId);
         if (record) {
           record.checkIn = checkIn;
           record.checkOut = checkOut;
@@ -122,6 +145,7 @@ function addSubmitAction(dataObj) {
     alert("Saved in LocalStorage ✅");
   });
 }
+
 
 function addBulkAction() {
   const selectAll = document.getElementById("select-all");
@@ -139,6 +163,7 @@ function addBulkAction() {
     });
   });
 }
+
 
 let searchInput = document.getElementById("search");
 let dropdownItems = document.querySelectorAll(".dropdown-menu .dropdown-item");
@@ -172,9 +197,8 @@ function applyFilters(selected = "") {
   activeCount.textContent = visibleCount;
 }
 
-searchInput.addEventListener("input", () =>
-  applyFilters(dropdownLabel.textContent)
-);
+searchInput.addEventListener("input", () => applyFilters(dropdownLabel.textContent));
+
 
 dropdownItems.forEach((item) => {
   item.addEventListener("click", (e) => {
@@ -188,47 +212,6 @@ dropdownItems.forEach((item) => {
 // handle logout
 let logoutBtn = document.getElementById("logout");
 logoutBtn.addEventListener("click", () => {
-  const isLoggedIn = localStorage.getItem("employee");
-
-  if (!isLoggedIn) {
-    swal({
-      title: "No active session!",
-      text: "You're not logged in to logout.",
-      icon: "error",
-      buttons: false,
-      timer: 2000,
-    });
-    return;
-  }
-
-  swal({
-    title: "Are you sure?",
-    text: "Once you logout, you will need to login again to access this page.",
-    icon: "warning",
-    buttons: true,
-    dangerMode: true,
-  }).then((willLogout) => {
-    if (willLogout) {
-      localStorage.removeItem("employee");
-
-      swal({
-        title: "Logged out!",
-        text: "You have successfully logged out.",
-        icon: "success",
-        timer: 1500,
-        buttons: false,
-      }).then(() => {
-        window.location.replace("login.html");
-      });
-    } else {
-      swal({
-        title: "Cancelled",
-        text: "You're still logged in!",
-        icon: "info",
-        buttons: false,
-        timer: 2000,
-      });
-    }
-  });
+  localStorage.removeItem("employee");
+  window.location.href = "login.html";
 });
-
