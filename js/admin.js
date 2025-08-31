@@ -556,28 +556,3 @@ backToTop.addEventListener("click", () => {
   });
 });
 
-// guard routes
-// function checkAuth() {
-//   try {
-//     const employee = localStorage.getItem("employee");
-//     if (!employee) {
-//       window.location.replace("login.html");
-//     }
-//   } catch (err) {
-//     window.location.replace("login.html");
-//   }
-// }
-
-// // initial check
-// document.addEventListener("DOMContentLoaded", checkAuth);
-
-// // if page restored from BFCache
-// window.addEventListener("pageshow", checkAuth);
-
-// // if user returns to tab
-// document.addEventListener("visibilitychange", () => {
-//   if (!document.hidden) checkAuth();
-// });
-
-// // if window regains focus
-// window.addEventListener("focus", checkAuth);
