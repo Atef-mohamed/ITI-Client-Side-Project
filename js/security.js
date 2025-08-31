@@ -91,16 +91,55 @@ document.addEventListener("DOMContentLoaded", () => {
       row.dataset.leave = record.isLeave;
       row.dataset.wfh = record.isWFH;
 
-      row.innerHTML = `
-        <td><input type="checkbox" class="row-select"></td>
-        <td>${emp.id}</td>
-        <td>${emp.name}</td>
-        <td>${emp.department}</td>
-        <td><span class="status"></span></td>
-        <td><input type="time" class="checkin ps-4" value="${record.checkIn}" disabled></td>
-        <td><input type="time" class="checkout ps-4" value="${record.checkOut}" disabled></td>
-        <td>${record.notes}</td>
-      `;
+      // Create cells and set textContent for user data
+      const checkboxCell = document.createElement("td");
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.className = "row-select";
+      checkboxCell.appendChild(checkbox);
+
+      const idCell = document.createElement("td");
+      idCell.textContent = emp.id;
+
+      const nameCell = document.createElement("td");
+      nameCell.textContent = emp.name;
+
+      const deptCell = document.createElement("td");
+      deptCell.textContent = emp.department;
+
+      const statusCell = document.createElement("td");
+      const statusSpan = document.createElement("span");
+      statusSpan.className = "status";
+      statusCell.appendChild(statusSpan);
+
+      const checkinCell = document.createElement("td");
+      const checkinInput = document.createElement("input");
+      checkinInput.type = "time";
+      checkinInput.className = "checkin ps-4";
+      checkinInput.value = record.checkIn;
+      checkinInput.disabled = true;
+      checkinCell.appendChild(checkinInput);
+
+      const checkoutCell = document.createElement("td");
+      const checkoutInput = document.createElement("input");
+      checkoutInput.type = "time";
+      checkoutInput.className = "checkout ps-4";
+      checkoutInput.value = record.checkOut;
+      checkoutInput.disabled = true;
+      checkoutCell.appendChild(checkoutInput);
+
+      const notesCell = document.createElement("td");
+      notesCell.textContent = record.notes;
+
+      row.appendChild(checkboxCell);
+      row.appendChild(idCell);
+      row.appendChild(nameCell);
+      row.appendChild(deptCell);
+      row.appendChild(statusCell);
+      row.appendChild(checkinCell);
+      row.appendChild(checkoutCell);
+      row.appendChild(notesCell);
+
       tbody.appendChild(row);
 
       row.updateStatus = () => {
