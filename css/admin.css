@@ -18,7 +18,7 @@ body {
 }
 
 .table-title{
-  color: light-dark(#212529, #e9ecef) !important;
+  color: #1e1e1e;
 }
 .profilepic {
   width: 50px;
@@ -123,40 +123,50 @@ nav {
   aspect-ratio: 1;
 }
 
- /* TableS */
+/* Table */
 .table-responsive .table {
   border-collapse: separate;
   border-spacing: 0;
   border-radius: 10px;
   overflow: hidden;
-  background-color: light-dark(#ffffff, #1e1e1e); /* Table bg changes */
-  color: light-dark(#212529, #e9ecef); /* Table text changes */
 }
-
+.tabletitle,
 .table-responsive .table thead {
-  background-color: light-dark(#eaf0ff, #2a2f3a);
-  color: light-dark(#212529, #f1f3f5);
+  background-color: light-dark(rgb(234, 240, 255), #2a2f3a);
 }
-
-
-.table-responsive .table td,
-.table-responsive .table th {
+.tabletitle,
+.table-responsive .table thead
+.tablecard {
+  border-radius: 10px;
+  background: light-dark(#fdfdfd, #1e1e1e);
+  color: light-dark(#212529, #e9ecef);
   border: 1px solid light-dark(#dee2e6, #2c2c2c);
+}
+.table thead th{
+    white-space: nowrap;
+}
+.table-responsive .table td {
   background-color: light-dark(#fdfdfd, #1e1e1e);
   color: light-dark(#212529, #e9ecef);
-  padding: 10px;
-}
-
-.table-responsive .table tbody tr:hover {
-  background-color: light-dark(#f1f3f5, #2a2a2a);
+  
 }
 
 .cardbody-table{
   background-color: light-dark(#fdfdfd, #1e1e1e);
   color: light-dark(#212529, #e9ecef);
 }
+
+.pagination{
+    background-color:  light-dark(#ffffff, #1e1e1e);
+}
+
+.ideal-card,
+#idealEmployeeCard>div{
+  background-color: light-dark(#fdfdfd, #1e1e1e);
+  color: light-dark(#212529, #e9ecef);
+} 
+
 .status.late , .status.Pending , .status.wfh {
-    
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -221,15 +231,8 @@ nav {
   object-fit: cover;
 }
 
-.pagination{
-    background-color:  light-dark(#ffffff, #1e1e1e);
-}
 
-.ideal-card,
-#idealEmployeeCard>div{
-  background-color: light-dark(#fdfdfd, #1e1e1e);
-  color: light-dark(#212529, #e9ecef);
-}
+
 
 .card1 {
   background-color: light-dark(rgb(253, 247, 241), #2d1f1f);
