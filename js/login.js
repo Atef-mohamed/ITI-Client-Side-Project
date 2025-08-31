@@ -90,7 +90,7 @@ loginButton.addEventListener("click", async (e) => {
   }
 });
 
-// redirect user to his age when he try to redirct login without logout
+// redirect user to his page when he try to redirct login without logout
 const employee = JSON.parse(localStorage.getItem("employee"));
 if (employee.role) {
   window.location.replace(`${employee.role.toLowerCase()}.html`);
