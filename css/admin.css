@@ -141,19 +141,66 @@ nav {
   border: 1px solid light-dark(#dee2e6, #2c2c2c);
 }
 
-/* Status badge */
-.status {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background-color: light-dark(rgb(255, 242, 231), #3a2a1d) !important;
-  color: light-dark(rgb(255, 129, 16), #ffa94d);
-  border-radius: 12px;
-  width: 90px;
-  text-align: center;
-  height: 35px;
-  padding: 5px 10px;
+
+
+.status.late , .status.Pending , .status.wfh {
+    
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(255, 242, 231) !important;
+    color: rgb(255, 129, 16);
+    border-radius: 12px;
+    width: 90px;
+    text-align: center;
+    height: 35px;
+    padding: 5px 10px;
+
 }
+
+.status.present , .status.Approved , .status.Completed {
+   
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(233, 247, 242)!important;
+    color:rgb(46, 180, 133);
+    border-radius: 12px;
+    width: 90px;
+    text-align: center;
+    height: 35px;
+    padding: 5px 10px;
+}
+
+.status.absent , .status.Rejected , .status.Missed{
+    
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color:rgb(255, 236, 232) !important;
+    color: rgb(255, 64, 28);
+    border-radius: 12px;
+    width: 90px;
+    text-align: center;
+    height: 35px;
+    padding: 5px 10px;
+}
+
+.status.Ongoing , .status.leave {
+
+ display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color:rgb(230, 247, 255)!important;
+    color:rgb(2, 180, 250);
+    border-radius: 12px;
+    width: 90px;
+    text-align: center;
+    height: 35px;
+    padding: 5px 10px;
+}
+
+
 
 
 .idealimg {
