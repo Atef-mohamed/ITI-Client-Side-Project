@@ -347,7 +347,7 @@ function renderPermissionsOversight(permissionRequestsData, employeesData) {
 
   container.innerHTML = `
   <div class="table-responsive">
-    <table class="table align-middle">
+    <table class="table text-center">
       <thead class="tabletitle">
         <tr class="tablehead">
         <th scope="col" >Employee</th>
