@@ -478,57 +478,106 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 // display admin name and username
-let adminName = document.getElementById("admin-name");
-let adminUsername = document.getElementById("admin-uername");
-adminName.textContent = JSON.parse(localStorage.getItem("employee")).name;
-adminUsername.textContent = JSON.parse(
-  localStorage.getItem("employee")
-).username;
+const employeeData = localStorage.getItem("employee");
+if (employeeData) {
+  const employeeObj = JSON.parse(employeeData);
+  const adminName = document.getElementById("admin-name");
+  const adminUsername = document.getElementById("admin-username");
+  if (adminName) adminName.textContent = employeeObj.name;
+  if (adminUsername) adminUsername.textContent = employeeObj.username;
+}
 
 // handle logout
 let logoutBtn = document.getElementById("logout");
+
 logoutBtn.addEventListener("click", () => {
+  const isLoggedIn = localStorage.getItem("employee");
+
+  if (!isLoggedIn) {
+    swal({
+      title: "No active session!",
+      text: "You're not logged in to logout.",
+      icon: "error",
+      buttons: false,
+      timer: 2000,
+    });
+    return;
+  }
+
   swal({
     title: "Are you sure?",
-    text: "Once Logout, you will not be able to show this page!",
+    text: "Once you logout, you will need to login again to access this page.",
     icon: "warning",
     buttons: true,
     dangerMode: true,
-  }).then((willDelete) => {
-    if (willDelete) {
-      swal("you're logout now", {
-        icon: "success",
-      });
+  }).then((willLogout) => {
+    if (willLogout) {
       localStorage.removeItem("employee");
-      window.location.href = "login.html";
+
+      swal({
+        title: "Logged out!",
+        text: "You have successfully logged out.",
+        icon: "success",
+        timer: 1500,
+        buttons: false,
+      }).then(() => {
+        window.location.replace("login.html");
+      });
     } else {
       swal({
-        title: "You're still logged in!",
+        title: "Cancelled",
+        text: "You're still logged in!",
         icon: "info",
         buttons: false,
         timer: 2000,
-        padding: "2em",
       });
     }
   });
 });
 
 
+
+
 // handle back to top button
-  const backToTop = document.getElementById("backToTop");
+const backToTop = document.getElementById("backToTop");
 
-  window.addEventListener("scroll", () => {
-    if (window.scrollY > 200) {
-      backToTop.style.display = "block";
-    } else {
-      backToTop.style.display = "none";
-    }
+window.addEventListener("scroll", () => {
+  if (window.scrollY > 200) {
+    backToTop.style.display = "block";
+  } else {
+    backToTop.style.display = "none";
+  }
+});
+
+backToTop.addEventListener("click", () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
   });
+});
 
-  backToTop.addEventListener("click", () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-  });
+// guard routes
+// function checkAuth() {
+//   try {
+//     const employee = localStorage.getItem("employee");
+//     if (!employee) {
+//       window.location.replace("login.html");
+//     }
+//   } catch (err) {
+//     window.location.replace("login.html");
+//   }
+// }
 
+// // initial check
+// document.addEventListener("DOMContentLoaded", checkAuth);
+
+// // if page restored from BFCache
+// window.addEventListener("pageshow", checkAuth);
+
+// // if user returns to tab
+// document.addEventListener("visibilitychange", () => {
+//   if (!document.hidden) checkAuth();
+// });
+
+// // if window regains focus
+// window.addEventListener("focus", checkAuth);

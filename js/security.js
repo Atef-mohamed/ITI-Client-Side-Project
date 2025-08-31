@@ -2,14 +2,13 @@ let modeImg = document.querySelector(".mode");
 
 modeImg.addEventListener("click", () => {
   document.body.classList.toggle("dark-mode");
-}); 
+});
 
 document.addEventListener("DOMContentLoaded", () => {
   let today = new Date();
   let formattedDate =
     today.getDate() + "-" + (today.getMonth() + 1) + "-" + today.getFullYear();
   document.getElementById("last-seen").innerText = formattedDate;
-
 
   let savedData = localStorage.getItem("attendanceData");
   if (savedData) {
@@ -31,7 +30,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-
 function displayTable(employees, attendanceRecords) {
   let tbody = document.querySelector(".mytable tbody");
   tbody.innerHTML = "";
@@ -48,13 +46,16 @@ function displayTable(employees, attendanceRecords) {
       <td>${emp.name}</td>
       <td>${emp.department}</td>
       <td><span class="status badge bg-secondary"></span></td>
-      <td><input type="time" class="checkin text-center ps-4" value="${record?.checkIn || ""}" disabled></td>
-      <td><input type="time" class="checkout text-center ps-4" value="${record?.checkOut || ""}" disabled></td>
+      <td><input type="time" class="checkin text-center ps-4" value="${
+        record?.checkIn || ""
+      }" disabled></td>
+      <td><input type="time" class="checkout text-center ps-4" value="${
+        record?.checkOut || ""
+      }" disabled></td>
       <td>${record?.notes || ""}</td>
     `;
     tbody.appendChild(row);
 
-    
     row.updateStatus = function () {
       let statusCell = row.querySelector(".status");
       let checkInInput = row.querySelector(".checkin");
@@ -81,7 +82,6 @@ function displayTable(employees, attendanceRecords) {
     };
     row.updateStatus();
 
-   
     let checkbox = row.querySelector(".row-select");
     checkbox.addEventListener("change", () => {
       let checkinInput = row.querySelector(".checkin");
@@ -91,7 +91,6 @@ function displayTable(employees, attendanceRecords) {
     });
   });
 }
-
 
 function addSubmitAction(dataObj) {
   const submitBtn = document.getElementById("submit-btn");
@@ -108,7 +107,9 @@ function addSubmitAction(dataObj) {
         let checkOut = row.querySelector(".checkout").value;
         let status = row.querySelector(".status").textContent;
 
-        let record = dataObj.attendanceRecords.find((r) => r.employeeId === empId);
+        let record = dataObj.attendanceRecords.find(
+          (r) => r.employeeId === empId
+        );
         if (record) {
           record.checkIn = checkIn;
           record.checkOut = checkOut;
@@ -121,7 +122,6 @@ function addSubmitAction(dataObj) {
     alert("Saved in LocalStorage ✅");
   });
 }
-
 
 function addBulkAction() {
   const selectAll = document.getElementById("select-all");
@@ -139,7 +139,6 @@ function addBulkAction() {
     });
   });
 }
-
 
 let searchInput = document.getElementById("search");
 let dropdownItems = document.querySelectorAll(".dropdown-menu .dropdown-item");
@@ -173,8 +172,9 @@ function applyFilters(selected = "") {
   activeCount.textContent = visibleCount;
 }
 
-searchInput.addEventListener("input", () => applyFilters(dropdownLabel.textContent));
-
+searchInput.addEventListener("input", () =>
+  applyFilters(dropdownLabel.textContent)
+);
 
 dropdownItems.forEach((item) => {
   item.addEventListener("click", (e) => {
@@ -188,6 +188,47 @@ dropdownItems.forEach((item) => {
 // handle logout
 let logoutBtn = document.getElementById("logout");
 logoutBtn.addEventListener("click", () => {
-  localStorage.removeItem("employee");
-  window.location.href = "login.html";
+  const isLoggedIn = localStorage.getItem("employee");
+
+  if (!isLoggedIn) {
+    swal({
+      title: "No active session!",
+      text: "You're not logged in to logout.",
+      icon: "error",
+      buttons: false,
+      timer: 2000,
+    });
+    return;
+  }
+
+  swal({
+    title: "Are you sure?",
+    text: "Once you logout, you will need to login again to access this page.",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+  }).then((willLogout) => {
+    if (willLogout) {
+      localStorage.removeItem("employee");
+
+      swal({
+        title: "Logged out!",
+        text: "You have successfully logged out.",
+        icon: "success",
+        timer: 1500,
+        buttons: false,
+      }).then(() => {
+        window.location.replace("login.html");
+      });
+    } else {
+      swal({
+        title: "Cancelled",
+        text: "You're still logged in!",
+        icon: "info",
+        buttons: false,
+        timer: 2000,
+      });
+    }
+  });
 });
+
