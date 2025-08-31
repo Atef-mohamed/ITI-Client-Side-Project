@@ -71,7 +71,7 @@ function renderTable(employees, attendance, tasks, payrolls) {
     <td>${emp.id}</td>
     <td>${emp.name}</td>
     <td class="text-center">${emp.department}</td>
-    <td class="text-center"><span class="status">${status}</span></td>
+    <td class="text-center"><span class="status ${status}">${status}</span></td>
     <td class="text-center">${Tasks}</td>
     <td class="text-center">${completedTasks}</td>
     <td class="text-center">$${payrollImpact}</td>
@@ -223,7 +223,7 @@ function renderIdealEmployeeCard(idealEmployees) {
     container.innerHTML = `
       <div class="card text-center p-3 position-relative ">
       <i class="fa-solid fa-star position-absolute top-0 start-0 m-2 fa-2x" style="color: #FFD43B;"></i>
-       <img src="idealpic.jpg" class="rounded-circle idealimg mx-auto d-block" />
+       <img src="../assets/images/idealpic.jpg" class="rounded-circle idealimg mx-auto d-block" />
         <p><strong>${finalEmp.name}</strong></p>
         <p>Department: ${finalEmp.department}</p>
         <p>Bonus: $${bonus}</p>
@@ -248,7 +248,9 @@ function renderTaskOversight(tasksData, employeesData) {
     (t) => t.status === "Completed" && !t.late
   ).length;
 
-  taskscard.innerHTML += `
+  taskscard.innerHTML = `
+  <i class="fa-solid fa-list-check fa-xl tasksicon"></i>
+  <h5 class="card-title">Tasks completed</h5>
   <div class="kpis">
       <p>Total Tasks: ${total}</p>
       <p>Completed: ${completed} (${((completed / total) * 100).toFixed(
@@ -279,9 +281,10 @@ function renderTaskOversight(tasksData, employeesData) {
                .join(", ")}
              </td>
             <td class="text-center" >${t.deadline}</td>
-            <td class="text-center" ><span class="status">${
-              t.status
-            }</span></td>
+
+
+            <td class="text-center" ><span class="status ${t.status}">${t.status}</span></td>
+
           </tr>
         `
           )
@@ -289,6 +292,35 @@ function renderTaskOversight(tasksData, employeesData) {
      
   `;
 }
+
+
+
+
+
+
+// filtered table
+const sortedtask = document.getElementById("sortTask");
+
+function filterTasks() {
+  let selected = sortedtask.value.toLowerCase(); 
+  let filteredTasks = [];
+
+  if (selected === "all") {
+    filteredTasks = tasksData;
+  } else {
+    filteredTasks = tasksData.filter(task => 
+      task.status.trim().toLowerCase() === selected
+    );
+  }
+
+  renderTaskOversight(filteredTasks, employeesData);
+
+}
+
+sortedtask.addEventListener("change", filterTasks);
+
+
+
 
 //////***************************************/
 
@@ -317,9 +349,9 @@ function renderPermissionsOversight(permissionRequestsData, employeesData) {
             }</td>
             <td class="text-center">${p.type}</td>
             <td class="text-center">${p.payload.requestedDate}</td>
-            <td class="text-center"> <span class="status"> ${
-              p.status
-            } </span></td>
+
+            <td class="text-center"> <span class="status ${p.status}"> ${p.status} </span></td>
+
             
           </tr>
         `
@@ -330,6 +362,30 @@ function renderPermissionsOversight(permissionRequestsData, employeesData) {
     </div>
   `;
 }
+
+
+
+//filtering
+const sortedPermission = document.getElementById("sortPermission");
+
+function filterPermissions() {
+  let selected = sortedPermission.value.trim().toLowerCase();
+  let filteredPermissions = [];
+
+  if (selected === "all") {
+    filteredPermissions = permissionRequestsData; 
+  } else {
+    filteredPermissions = permissionRequestsData.filter(request => 
+      request.status.trim().toLowerCase() === selected
+    );
+  }
+
+  renderPermissionsOversight(filteredPermissions, employeesData); 
+}
+
+sortedPermission.addEventListener("change", filterPermissions);
+
+
 
 ////********************************************** */
 
@@ -394,7 +450,10 @@ function saveSettings() {
     late30: document.getElementById("late30").value,
     late60: document.getElementById("late60").value,
     late120: document.getElementById("late120").value,
+
     absent: 100,
+
+   
     // Tasks
     low: document.getElementById("low-priority").value,
     medium: document.getElementById("medium-priority").value,
