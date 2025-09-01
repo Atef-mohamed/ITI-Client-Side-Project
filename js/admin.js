@@ -74,6 +74,7 @@ function renderTable(employees, attendance, tasks, payrolls) {
     <td class="text-center"><span class="status ${status}">${status}</span></td>
     <td class="text-center">${Tasks}</td>
     <td class="text-center">${completedTasks}</td>
+    <td class="text-center">$${emp.monthlySalary}</td>
     <td class="text-center">$${payrollImpact}</td>
     <td class="text-center">$${netSalary}</td>
   `;
@@ -350,10 +351,10 @@ function renderPermissionsOversight(permissionRequestsData, employeesData) {
     <table class="table text-center">
       <thead class="tabletitle">
         <tr class="tablehead">
-        <th scope="col" >Employee</th>
-        <th scope="col" >Type</th>
-        <th scope="col" >Date</th>
-        <th scope="col" >Status</th>
+        <th class="text-center" scope="col" >Employee</th>
+        <th class="text-center" scope="col" >Type</th>
+        <th class="text-center" scope="col" >Date</th>
+        <th class="text-center" scope="col" >Status</th>
         
         </tr>
       </thead>
