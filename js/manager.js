@@ -74,7 +74,7 @@ function setActivePage(key) {
     if (key === 'reports') renderReports();
 }
 
-//renderApprovals
+//belongs to renderApprovals
 function typeBadge(type) {
     var map = {
         Late: '#FF401C',
@@ -89,14 +89,14 @@ function typeBadge(type) {
     return '<span class="badge" style="background:#E8EBF1;color:' + color + ';">' + type + '</span>';
 }
 
-//renderApprovals
+//belongs to renderApprovals
 function statusBadge(s) {
     var map = { Pending: 'warning', Approved: 'success', Rejected: 'danger' };
     var cls = map[s] || 'secondary';
     return '<span class="badge bg-' + cls + '">' + s + '</span>';
 }
 
-//renderApprovals
+//belongs to renderApprovals
 function detailForRequest(r) {
     if (r.type === 'Late') return 'Late ~' + (r.payload && r.payload.minutesExpectedLate ? r.payload.minutesExpectedLate : '') + ' min · ' + (r.payload && r.payload.reason ? r.payload.reason : '');
     if (r.type === 'Leave') return 'Leave · ' + (r.payload && r.payload.reason ? r.payload.reason : '');
@@ -106,6 +106,48 @@ function detailForRequest(r) {
     if (r.type === 'Extend Task') return 'Extension · ' + (r.payload && r.payload.reason ? r.payload.reason : '');
     return '';
 }
+
+// function renderApprovals() {
+//     var tbody = document.querySelector('#requestsTable tbody');
+//     if (!tbody) return;
+//     tbody.innerHTML = '';
+//     var q = '';
+//     var searchEl = document.getElementById('searchRequests');
+//     if (searchEl && searchEl.value) q = searchEl.value.toLowerCase();
+
+//     var rows = [];
+//     for (var i = 0; i < db.requests.length; i++) {
+//         var r = db.requests[i];
+//         if (window.approvalsFilter && window.approvalsFilter !== 'All' && r.type !== window.approvalsFilter) continue;
+//         var str = empName(r.employeeId) + ' ';
+//         if (r.payload && r.payload.reason) str += r.payload.reason;
+//         if (str.toLowerCase().indexOf(q) === -1) continue;
+//         rows.push(r);
+//     }
+//     rows.sort(function (a, b) { return new Date(b.createdAt) - new Date(a.createdAt); });
+
+//     for (var j = 0; j < rows.length; j++) {
+//         var r2 = rows[j];
+//         var tr = document.createElement('tr');
+//         tr.innerHTML =
+//             '<td><input type="checkbox" class="rowChk" data-id="' + r2.id + '" /></td>' +
+//             '<td>' + (j + 1) + '</td>' +
+//             '<td>' + empName(r2.employeeId) + '</td>' +
+//             '<td>' + typeBadge(r2.type) + '</td>' +
+//             '<td>' + (r2.payload && r2.payload.requestedDate ? r2.payload.requestedDate : '-') + '</td>' +
+//             '<td class="small text-secondary">' + detailForRequest(r2) + '</td>' +
+//             '<td class="text-center">' + statusBadge(r2.status) + '</td>' +
+//             '<td>' +
+//             '<button class="btn btn-success btn-sm me-1"' + (r2.status !== 'Pending' ? ' disabled' : '') + ' data-action="approve" data-id="' + r2.id + '"><i class="bi bi-check2"></i></button>' +
+//             '<button class="btn btn-danger btn-sm"' + (r2.status !== 'Pending' ? ' disabled' : '') + ' data-action="reject" data-id="' + r2.id + '"><i class="bi bi-x"></i></button>' +
+//             '</td>';
+//         tbody.appendChild(tr);
+//     }
+//     var selAll = document.getElementById('selectAllRequests');
+//     if (selAll) selAll.checked = false;
+// }
+window.approvalsPage = 1;
+window.approvalsPageSize = 5;
 
 function renderApprovals() {
     var tbody = document.querySelector('#requestsTable tbody');
@@ -126,17 +168,30 @@ function renderApprovals() {
     }
     rows.sort(function (a, b) { return new Date(b.createdAt) - new Date(a.createdAt); });
 
-    for (var j = 0; j < rows.length; j++) {
-        var r2 = rows[j];
+    // Pagination logic
+    var page = window.approvalsPage || 1;
+    var pageSize = window.approvalsPageSize || 10;
+    var totalRows = rows.length;
+    var totalPages = Math.ceil(totalRows / pageSize);
+    if (page > totalPages) page = totalPages;
+    if (page < 1) page = 1;
+    window.approvalsPage = page;
+
+    var startIdx = (page - 1) * pageSize;
+    var endIdx = Math.min(startIdx + pageSize, totalRows);
+    var pagedRows = rows.slice(startIdx, endIdx);
+
+    for (var j = 0; j < pagedRows.length; j++) {
+        var r2 = pagedRows[j];
         var tr = document.createElement('tr');
         tr.innerHTML =
             '<td><input type="checkbox" class="rowChk" data-id="' + r2.id + '" /></td>' +
-            '<td>' + (j + 1) + '</td>' +
+            '<td>' + (startIdx + j + 1) + '</td>' +
             '<td>' + empName(r2.employeeId) + '</td>' +
             '<td>' + typeBadge(r2.type) + '</td>' +
             '<td>' + (r2.payload && r2.payload.requestedDate ? r2.payload.requestedDate : '-') + '</td>' +
-            '<td class="small text-secondary">' + detailForRequest(r2) + '</td>' +
-            '<td class="text-center">' + statusBadge(r2.status) + '</td>' +
+            '<td class="small text-secondary style="max-width: 100px; overflow-y: auto;" class="text-center">' + detailForRequest(r2) + '</td>' +
+            '<td  ">' + statusBadge(r2.status) + '</td>' +
             '<td>' +
             '<button class="btn btn-success btn-sm me-1"' + (r2.status !== 'Pending' ? ' disabled' : '') + ' data-action="approve" data-id="' + r2.id + '"><i class="bi bi-check2"></i></button>' +
             '<button class="btn btn-danger btn-sm"' + (r2.status !== 'Pending' ? ' disabled' : '') + ' data-action="reject" data-id="' + r2.id + '"><i class="bi bi-x"></i></button>' +
@@ -145,8 +200,81 @@ function renderApprovals() {
     }
     var selAll = document.getElementById('selectAllRequests');
     if (selAll) selAll.checked = false;
+
+    renderApprovalsPagination(totalPages, page);
 }
 
+
+function renderApprovalsPagination(totalPages, currentPage) {
+    var container = document.getElementById('approvalsPagination');
+    if (!container) {
+       
+        var table = document.getElementById('requestsTable');
+        if (!table) return;
+        container = document.createElement('nav');
+        container.id = 'approvalsPagination';
+        container.className = 'mt-3';
+        table.parentNode.appendChild(container);
+    }
+    container.innerHTML = '';
+
+    if (totalPages <= 1) return;
+
+    var ul = document.createElement('ul');
+    ul.className = 'pagination justify-content-center';
+
+    // Previous button
+    var prevLi = document.createElement('li');
+    prevLi.className = 'page-item' + (currentPage === 1 ? ' disabled' : '');
+    var prevBtn = document.createElement('button');
+    prevBtn.className = 'page-link';
+    prevBtn.innerHTML = '&laquo;';
+    prevBtn.onclick = function () {
+        if (window.approvalsPage > 1) {
+            window.approvalsPage--;
+            renderApprovals();
+        }
+    };
+    prevLi.appendChild(prevBtn);
+    ul.appendChild(prevLi);
+
+    // Page numbers (show max 5 pages)
+    var start = Math.max(1, currentPage - 2);
+    var end = Math.min(totalPages, start + 4);
+    if (end - start < 4) start = Math.max(1, end - 4);
+    for (var i = start; i <= end; i++) {
+        var li = document.createElement('li');
+        li.className = 'page-item' + (i === currentPage ? ' active' : '');
+        var btn = document.createElement('button');
+        btn.className = 'page-link';
+        btn.textContent = i;
+        (function (pageNum) {
+            btn.onclick = function () {
+                window.approvalsPage = pageNum;
+                renderApprovals();
+            };
+        })(i);
+        li.appendChild(btn);
+        ul.appendChild(li);
+    }
+
+    
+    var nextLi = document.createElement('li');
+    nextLi.className = 'page-item' + (currentPage === totalPages ? ' disabled' : '');
+    var nextBtn = document.createElement('button');
+    nextBtn.className = 'page-link';
+    nextBtn.innerHTML = '&raquo;';
+    nextBtn.onclick = function () {
+        if (window.approvalsPage < totalPages) {
+            window.approvalsPage++;
+            renderApprovals();
+        }
+    };
+    nextLi.appendChild(nextBtn);
+    ul.appendChild(nextLi);
+
+    container.appendChild(ul);
+}
 function renderAttendance() {
     var fromEl = document.getElementById('attFrom');
     var toEl = document.getElementById('attTo');
@@ -525,19 +653,11 @@ if (confirmRejectBtn) {
 }
 
 function setupApprovalsFilter() {
-
     window.approvalsFilter = "All";
-    var filterBtns = document.querySelectorAll('button[data-filter]');
-    for (var i = 0; i < filterBtns.length; i++) {
-        filterBtns[i].addEventListener('click', function (e) {
-
-            for (var j = 0; j < filterBtns.length; j++) {
-                filterBtns[j].classList.remove('active');
-            }
-
-            this.classList.add('active');
-
-            window.approvalsFilter = this.getAttribute('data-filter');
+    var filterSelect = document.getElementById('requestTypeFilter');
+    if (filterSelect) {
+        filterSelect.addEventListener('change', function () {
+            window.approvalsFilter = this.value;
             renderApprovals();
         });
     }
@@ -662,6 +782,57 @@ function initTheme() {
         });
     }
 }
+
+// logoutBtn.addEventListener("click", () => {
+//     const isLoggedIn = localStorage.getItem("employee");
+//     console.log(isLoggedIn);
+// })
+
+// logoutBtn.addEventListener("click", () => {
+//     const isLoggedIn = localStorage.getItem("employee");
+
+//     if (!isLoggedIn) {
+//         swal({
+//             title: "No active session!",
+//             text: "You're not logged in to logout.",
+//             icon: "error",
+//             buttons: false,
+//             timer: 2000,
+//         });
+//         return;
+//     }
+
+//     swal({
+//         title: "Are you sure?",
+//         text: "Once you logout, you will need to login again to access this page.",
+//         icon: "warning",
+//         buttons: true,
+//         dangerMode: true,
+//     }).then((willLogout) => {
+//         if (willLogout) {
+//             localStorage.removeItem("employee");
+
+//             swal({
+//                 title: "Logged out!",
+//                 text: "You have successfully logged out.",
+//                 icon: "success",
+//                 timer: 1500,
+//                 buttons: false,
+//             }).then(() => {
+//                 window.location.replace("login.html");
+//             });
+//         } else {
+//             swal({
+//                 title: "Cancelled",
+//                 text: "You're still logged in!",
+//                 icon: "info",
+//                 buttons: false,
+//                 timer: 2000,
+//             });
+//         }
+//     });
+// });
+
 
 // Export Attendance Table to CSV
 document.getElementById("exportAttendanceCsv").addEventListener("click", function () {
