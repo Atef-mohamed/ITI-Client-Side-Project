@@ -1,5 +1,3 @@
-// auth.js
-
 function checkAuth() {
   try {
     const employee = localStorage.getItem("employee");
