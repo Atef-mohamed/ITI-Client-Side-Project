@@ -21,7 +21,11 @@ document.addEventListener("DOMContentLoaded", () => {
   let savedData = localStorage.getItem("attendanceData");
   if (savedData) {
     let parsed = JSON.parse(savedData);
-    displayTable(parsed.employees, parsed.attendanceRecords);
+    displayTable(
+      parsed.employees,
+      parsed.attendanceRecords,
+      parsed.permissions
+    );
     addBulkAction();
     addSubmitAction(parsed);
     applyFilters("");
@@ -29,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch("../data.json")
       .then((response) => response.json())
       .then((data) => {
-        displayTable(data.employees, data.attendanceRecords);
+        displayTable(data.employees, data.attendanceRecords, data.permissions);
         addBulkAction();
         addSubmitAction(data);
         applyFilters("");
@@ -41,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // =====================
 // Display Attendance Table
 // =====================
-function displayTable(employees, attendanceRecords) {
+function displayTable(employees, attendanceRecords, permissions = []) {
   let tbody = document.querySelector(".mytable tbody");
   tbody.innerHTML = "";
 
@@ -58,7 +62,6 @@ function displayTable(employees, attendanceRecords) {
 
     let checkoutValue = record?.checkOut || "";
 
-    // Auto-checkout only for valid leave (not absent)
     if (
       record?.isLeave &&
       !record?.notes?.toLowerCase().includes("absent") &&
@@ -81,30 +84,69 @@ function displayTable(employees, attendanceRecords) {
     `;
     tbody.appendChild(row);
 
+    // =====================
     // Update status logic
+    // =====================
     row.updateStatus = function () {
       let statusCell = row.querySelector(".status");
       let checkInInput = row.querySelector(".checkin");
       let onLeave = row.dataset.leave === "true";
       let wfh = row.dataset.wfh === "true";
       let time = checkInInput.value;
-      let notes = row.children[7].textContent.trim().toLowerCase();
+      let notesCell = row.children[7];
 
-      if (wfh) {
-        statusCell.textContent = "Present (WFH)";
-        statusCell.className = "status present";
-      } else if (onLeave && notes && !notes.includes("absent")) {
-        statusCell.textContent = "Leave";
-        statusCell.className = "status leave";
-      } else if (!time || time > "11:00") {
-        statusCell.textContent = "Absent";
-        statusCell.className = "status absent";
-      } else if (time > "09:00" && time <= "11:00") {
-        statusCell.textContent = "Late";
-        statusCell.className = "status late";
+      // 🔎 check if there's an approved permission
+      let approvedPermission = (permissions || []).find(
+        (p) =>
+          p.employeeId === emp.id &&
+          p.payload?.requestedDate === today &&
+          p.status === "Approved"
+      );
+
+      if (approvedPermission) {
+        let reason = approvedPermission.payload?.reason || "";
+        notesCell.textContent = reason;
+
+        switch (approvedPermission.type) {
+          case "Leave":
+            statusCell.textContent = "Leave";
+            statusCell.className = "status leave";
+            return;
+          case "WFH":
+            statusCell.textContent = "Present (WFH)";
+            statusCell.className = "status present";
+            return;
+          case "Late":
+            statusCell.textContent = "Present (Approved Late)";
+            statusCell.className = "status present";
+            return;
+          case "Overtime":
+            statusCell.textContent = "Present (Overtime)";
+            statusCell.className = "status present";
+            return;
+          default:
+            statusCell.textContent = "Approved Permission";
+            statusCell.className = "status present";
+        }
       } else {
-        statusCell.textContent = "Present";
-        statusCell.className = "status present";
+        let notes = notesCell.textContent.trim().toLowerCase();
+
+        if (wfh) {
+          statusCell.textContent = "Present (WFH)";
+          statusCell.className = "status present";
+        } else if (onLeave && notes && !notes.includes("absent")) {
+          statusCell.textContent = "Leave";
+          statusCell.className = "status leave";
+        } else if (!time || time > "11:00") {
+          statusCell.textContent = "Absent";
+          statusCell.className = "status absent";
+        } else if (time > "09:00" && time <= "11:00") {
+          statusCell.textContent = "Late";
+          statusCell.className = "status late";
+        } else {
+          statusCell.textContent = "Present";
+          statusCell.className = "status present";
+        }
       }
     };
 
@@ -138,6 +180,7 @@ function addSubmitAction(dataObj) {
         let checkIn = row.querySelector(".checkin").value;
         let checkOut = row.querySelector(".checkout").value;
         let status = row.querySelector(".status").textContent;
+        let notes = row.children[7].textContent;
 
         let record = dataObj.attendanceRecords.find(
           (r) => r.employeeId === empId
@@ -146,6 +189,7 @@ function addSubmitAction(dataObj) {
           record.checkIn = checkIn;
           record.checkOut = checkOut;
           record.status = status;
+          record.notes = notes;
         }
         checkbox.checked = false;
         row.querySelector(".checkin").disabled = true;
@@ -186,7 +230,6 @@ let dropdownItems = document.querySelectorAll(".dropdown-menu .dropdown-item");
 let dropdownLabel = document.querySelector(".filter-dropdown .fw-bold");
 let activeCount = document.getElementById("activeCount");
 
-// Display security user info
 let nameOfSecurity = document.querySelector("#security-name");
 let userOfSecurity = document.querySelector("#security-user");
 nameOfSecurity.textContent = JSON.parse(localStorage.getItem("employee")).name;
@@ -194,7 +237,6 @@ userOfSecurity.textContent = JSON.parse(
   localStorage.getItem("employee")
 ).username;
 
-// Apply filters (search + dropdown)
 function applyFilters(selected = "") {
   const term = searchInput.value.toLowerCase();
   const rows = document.querySelectorAll(".mytable tbody tr");

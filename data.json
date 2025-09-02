@@ -476,18 +476,18 @@
       "isLeave": false,
       "notes": "Work from home"
     },
-    {
-      "id": 32,
-      "employeeId": 5,
-      "date": "2025-09-02",
-      "checkIn": null,
-      "checkOut": null,
-      "status": "Absent",
-      "minutesLate": 0,
-      "isWFH": false,
-      "isLeave": true,
-      "notes": "Absent without notice"
-    },
+     {
+    "id": 32,
+    "employeeId": 5,
+    "date": "2025-09-02",
+    "checkIn": "09:00",
+    "checkOut": "18:00",
+    "status": "Present",   
+    "minutesLate": 0,
+    "isWFH": false,
+    "isLeave": false,     
+    "notes": "Report deadline"
+  },
     {
       "id": 33,
       "employeeId": 5,
