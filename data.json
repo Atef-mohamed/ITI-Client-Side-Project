@@ -189,17 +189,17 @@
       "notes": "Absent without notice"
     },
     {
-      "id": 4,
-      "employeeId": 1,
-      "date": "2025-09-02",
-      "checkIn": "09:00",
-      "checkOut": null,
-      "status": "Leave",
-      "minutesLate": 0,
-      "isWFH": false,
-      "isLeave": true,
-      "notes": "Annual leave"
-    },
+    "id": 4,
+    "employeeId": 1,
+    "date": "2025-09-02",
+    "checkIn": "09:15",
+    "checkOut": "17:00",
+    "status": "Late",
+    "minutesLate": 15,
+    "isWFH": false,
+    "isLeave": false,
+    "notes": "Arrived late"
+  },
     {
       "id": 5,
       "employeeId": 1,
@@ -261,17 +261,17 @@
       "notes": "Work from home"
     },
     {
-      "id": 11,
-      "employeeId": 2,
-      "date": "2025-09-02",
-      "checkIn": "09:00",
-      "checkOut": "17:00",
-      "status": "Present",
-      "minutesLate": 0,
-      "isWFH": false,
-      "isLeave": false,
-      "notes": ""
-    },
+    "id": 11,
+    "employeeId": 2,
+    "date": "2025-09-02",
+    "checkIn": "09:00",
+    "checkOut": "17:00",
+    "status": "Present",
+    "minutesLate": 0,
+    "isWFH": false,
+    "isLeave": false,
+    "notes": ""
+  },
     {
       "id": 12,
       "employeeId": 2,
@@ -332,18 +332,18 @@
       "isLeave": true,
       "notes": "Annual leave"
     },
-    {
-      "id": 18,
-      "employeeId": 3,
-      "date": "2025-09-02",
-      "checkIn": "09:15",
-      "checkOut": null,
-      "status": "Late",
-      "minutesLate": 15,
-      "isWFH": false,
-      "isLeave": true,
-      "notes": ""
-    },
+      {
+    "id": 18,
+    "employeeId": 3,
+    "date": "2025-09-02",
+    "checkIn": null,
+    "checkOut": null,
+    "status": "Leave",
+    "minutesLate": 0,
+    "isWFH": false,
+    "isLeave": true,
+    "notes": "Family matter"
+  },
     {
       "id": 19,
       "employeeId": 3,
@@ -620,18 +620,18 @@
       "isLeave": true,
       "notes": "Annual leave"
     },
-    {
-      "id": 46,
-      "employeeId": 7,
-      "date": "2025-09-02",
-      "checkIn": "09:00",
-      "checkOut": "17:00",
-      "status": "Present",
-      "minutesLate": 0,
-      "isWFH": false,
-      "isLeave": false,
-      "notes": ""
-    },
+     {
+    "id": 46,
+    "employeeId": 7,
+    "date": "2025-09-02",
+    "checkIn": null,
+    "checkOut": null,
+    "status": "Leave",
+    "minutesLate": 0,
+    "isWFH": false,
+    "isLeave": true,
+    "notes": "Sick leave"
+  },
     {
       "id": 47,
       "employeeId": 7,
@@ -692,18 +692,18 @@
       "isLeave": false,
       "notes": "Work from home"
     },
-    {
-      "id": 53,
-      "employeeId": 8,
-      "date": "2025-09-02",
-      "checkIn": null,
-      "checkOut": null,
-      "status": "Absent",
-      "minutesLate": 0,
-      "isWFH": false,
-      "isLeave": true,
-      "notes": "Absent without notice"
-    },
+     {
+    "id": 53,
+    "employeeId": 8,
+    "date": "2025-09-02",
+    "checkIn": "09:00",
+    "checkOut": "17:00",
+    "status": "WFH",
+    "minutesLate": 0,
+    "isWFH": true,
+    "isLeave": false,
+    "notes": "Focus work"
+  },
     {
       "id": 54,
       "employeeId": 8,
@@ -764,18 +764,18 @@
       "isLeave": false,
       "notes": "Arrived late"
     },
-    {
-      "id": 60,
-      "employeeId": 9,
-      "date": "2025-09-02",
-      "checkIn": "09:15",
-      "checkOut": "17:10",
-      "status": "WFH",
-      "minutesLate": 0,
-      "isWFH": true,
-      "isLeave": false,
-      "notes": "Work from home"
-    },
+      {
+    "id": 59,
+    "employeeId": 9,
+    "date": "2025-09-02",
+    "checkIn": "09:15",
+    "checkOut": "17:00",
+    "status": "Late",
+    "minutesLate": 15,
+    "isWFH": false,
+    "isLeave": false,
+    "notes": "Car issue"
+  }
     {
       "id": 61,
       "employeeId": 9,
