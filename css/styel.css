@@ -3,3 +3,61 @@
     margin: 0;
     box-sizing: border-box;
 }
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #02B4FA, black);
+    color: white;
+    text-align: center;
+}
+
+img.logo {
+    width: 120px;
+    margin-bottom: 20px;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+h1 {
+    font-size: 3rem;
+}
+
+h3 {
+    font-size: 1.5rem;
+    margin-top: 10px;
+}
+
+.btn-login {
+margin-top: 30px;
+padding: 15px 40px;
+font-size: 1.2rem;
+border-radius: 50px;
+background-color: #316AFF;
+color: #fff;
+font-weight: bold;
+overflow: hidden;
+}
+
+
+.btn-login:hover {
+    background-color: #fff;
+    color: #02B4FA;
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease-in-out;
+}
+
+.icon-arrow{
+    display:inline-block;   
+    margin-left:10px;
+    animation: arrowWiggle .8s infinite alternate ease-in-out;
+    transition: transform;
+}
+@keyframes arrowWiggle{
+    from{ transform: translateX(0); }
+    to  { transform: translateX(10px); }
+}
