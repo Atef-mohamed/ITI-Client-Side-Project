@@ -4,20 +4,419 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>empolyee</title>
+  <title>Employee Dashboard</title>
   <link rel="stylesheet" href="../css/bootstrap.min.css">
   <link rel="stylesheet" href="../css/all.min.css">
   <link rel="stylesheet" href="../css/employee.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
-  <h1 class="bg-danger">hellllllllllllllllllllllllllllllo</h1>
-  <h2>
-    <i class="fa-solid fa-user"></i> empolyee
-  </h2>
+    <header>
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="logo fs-2 fw-bolder text-decoration-none d-flex align-items-center gap-2" href="#">
+                <img src="../assets/images/logo.png" alt="Company Logo" class="logo-img">
+                Logo
+            </a>
+            <div class="d-flex align-items-center gap-3">
+                <div class="employee-profile d-flex align-items-center gap-2">
+                    <div class="employee-avatar">
+                        <img src="../assets/images/idealpic.jpg" alt="Employee Avatar" class="avatar-img">
+                    </div>
+                    <div class="employee-info">
+                        <div class="employee-name" id="employeeName">Loading...</div>
+                        <div class="employee-role" id="employeeRole">Employee</div>
+                    </div>
+                </div>
+                <button class="border-0 d-flex justify-content-center align-items-center" id="theme-toggle"><i
+                        class="fa-solid fa-sun fs-5"></i></button>
+                <button class="btn btn-outline-danger d-flex align-items-center gap-2" id="logoutBtn">
+                    <i class="fa-solid fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <section class="pt-5">
+        <div class="container">
+            <!-- Payroll Cards Section -->
+            <div class="row g-3 mb-4">
+                <div id="payrollCards" class="col-12">
+                    <!-- Payroll cards will be rendered here -->
+                </div>
+            </div>
+            <div class="row">
+                <div class="calender-section col-12 col-md-6 col-lg-7 p-0 pe-3 m-0">
+
+
+                    <!-- Requests Card -->
+                    <div class="box p-4 mt-3">
+                        <h2 class="title fw-bold fs-3">Requests</h2>
+                        <div id="approvedSummaryCard" class="row g-3 mt-1"></div>
+                        <div id="requestListCard" class="row g-3 mt-3">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="request-section col-12 col-md-6 col-lg-5 p-0 ps-3 m-0">
+                    <div class="box p-5">
+                        <h2 class="title fw-bold fs-3 mb-4">Request Permission</h2>
+                        <form id="permissionForm">
+                            <div class="form-group">
+                                <label for="permissionType">Type</label>
+                                <select class="form-control" id="permissionType" required>
+                                    <option value="" selected disabled>Select permission type</option>
+                                    <option value="late">Late</option>
+                                    <option value="absence">Absence</option>
+                                    <option value="wfh">WFH</option>
+                                    <option value="overtime">Overtime</option>
+                                    <option value="deadline">Deadline Extension</option>
+                                </select>
+                            </div>
+    
+                            <div id="dynamicFields">
+                                <!-- Dynamic fields will appear here based on selection -->
+                            </div>
+    
+                            <div class="form-group">
+                                <label for="reason">Reason</label>
+                                <textarea class="form-control" id="reason" rows="3" placeholder="Enter the reason"
+                                    required></textarea>
+                            </div>
+    
+                            <button type="submit" class="btn-submit">
+                                <i class="fas fa-paper-plane me-2"></i>Submit Request
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Attendance Section -->
+    <section class="container p-5 mt-5">
+        <div class="box p-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <h2 class="title fw-bold fs-3 mb-0">Today's Attendance</h2>
+                <div class="d-flex gap-2">
+                    <input type="date" id="attendanceDate" class="form-control form-control-sm" />
+                    <button class="btn btn-primary btn-sm" id="btnFilterAtt">
+                        <i class="fa-solid fa-filter me-1"></i>Filter
+                    </button>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-8">
+                    <div class="card border-0 shadow-sm" style="background-color: light-dark(#FFFFFF, #2B2A43);">
+                        <div class="card-body p-3">
+                            <h6 class="text-secondary mb-3">Attendance Table</h6>
+                            <div class="table-responsive">
+                                <table class="table align-middle" id="attendanceTable">
+                                    <thead>
+                                        <tr>
+                                            <th style="color: light-dark(#0C243C, #FFFFFF);">Status</th>
+                                            <th style="color: light-dark(#0C243C, #FFFFFF);">Minutes Late</th>
+                                            <th style="color: light-dark(#0C243C, #FFFFFF);">WFH</th>
+                                            <th style="color: light-dark(#0C243C, #FFFFFF);">Leave</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="attendanceTableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="kanban-container container p-5 mt-5">
+        <h2 class="title fw-bold fs-3">Tasks</h2>
+        <div class="kanban-board mt-4">
+            <!-- To Do Column -->
+            <div class="kanban-column" id="todo-column">
+                <div class="kanban-column-header bg-todo d-flex justify-content-between fs-4">
+                    To Do <span class="badge ms-2 d-flex justify-content-center align-items-center">0</span>
+                </div>
+                <div class="kanban-tasks">
+                    <!-- Tasks will be generated dynamically by JavaScript -->
+                </div>
+            </div>
+
+            <!-- In Progress Column -->
+            <div class="kanban-column" id="progress-column">
+                <div class="kanban-column-header bg-inprogress d-flex justify-content-between fs-4">
+                    In Progress <span class="badge ms-2 d-flex justify-content-center align-items-center">0</span>
+                </div>
+                <div class="kanban-tasks">
+                    <!-- Tasks will be generated dynamically by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Done Column -->
+            <div class="kanban-column" id="done-column">
+                <div class="kanban-column-header bg-done d-flex justify-content-between fs-4">
+                    Done <span class="badge ms-2 d-flex justify-content-center align-items-center">0</span>
+                </div>
+                <div class="kanban-tasks">
+                    <!-- Tasks will be generated dynamically by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
   <script src="../js/bootstrap.bundle.min.js"></script>
   <script src="../js/all.min.js"></script>
   <script src="../js/empolyee.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Initialize rendering utilities
+
+      function safeParse(json, fallback) {
+        try { return JSON.parse(json); } catch { return fallback; }
+      }
+
+      // ===== Payroll Cards Rendering =====
+      async function renderPayrollCards() {
+        const payrollContainer = document.getElementById('payrollCards');
+        if (!payrollContainer) return;
+
+        const currentEmployeeId = parseInt(localStorage.getItem('currentEmployeeId'));
+        if (!currentEmployeeId) {
+          payrollContainer.innerHTML = '<div class="col-12"><div class="alert alert-warning">Please log in to view payroll information.</div></div>';
+          return;
+        }
+
+        try {
+          // Fetch employee data from data.json
+          const response = await fetch('../data.json');
+          const data = await response.json();
+          const employee = data.employees.find(emp => emp.id == currentEmployeeId);
+          
+          if (!employee) {
+            payrollContainer.innerHTML = '<div class="col-12"><div class="alert alert-warning">Employee not found.</div></div>';
+            return;
+          }
+
+          // Get payroll data from localStorage
+          const payrollData = safeParse(localStorage.getItem('payroll'), []);
+          const employeePayroll = payrollData.find(p => p.employeeId == currentEmployeeId) || {};
+
+          const salary = employee.monthlySalary || 0;
+          const bonus = employeePayroll.bonus || 0;
+          const overtimePay = employeePayroll.overtimePay || 0;
+          const absencePenalty = employeePayroll.absencePenalty || 0;
+          const taskPenalty = employeePayroll.taskPenalty || 0;
+          const latePenalty = employeePayroll.latePenalty || 0;
+          const netSalary = salary + bonus + overtimePay - absencePenalty - taskPenalty - latePenalty;
+
+          const cards = [
+            { title: 'Salary', value: salary, icon: 'fa-dollar-sign', color: '#22B07E' },
+            { title: 'Bonus', value: bonus, icon: 'fa-gift', color: '#316AFF' },
+            { title: 'Overtime Pay', value: overtimePay, icon: 'fa-clock', color: '#FDBB1F' },
+            { title: 'Absence Penalty', value: absencePenalty, icon: 'fa-user-minus', color: '#FF401C' },
+            { title: 'Task Penalty', value: taskPenalty, icon: 'fa-tasks', color: '#FF401C' },
+            { title: 'Late Penalty', value: latePenalty, icon: 'fa-exclamation-triangle', color: '#FF401C' },
+            { title: 'Net Salary', value: netSalary, icon: 'fa-calculator', color: netSalary >= 0 ? '#22B07E' : '#FF401C' }
+          ];
+
+          const cardsHtml = cards.map(card => `
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card border-0 shadow-sm h-100" style="background-color: light-dark(#FFFFFF, #2B2A43);">
+                <div class="card-body text-center">
+                  <div class="mb-2">
+                    <i class="fa-solid ${card.icon} fs-4" style="color: ${card.color};"></i>
+                  </div>
+                  <h6 class="card-title mb-1" style="color: light-dark(#0C243C, #FFFFFF);">${card.title}</h6>
+                  <div class="fw-bold fs-5" style="color: ${card.color};">$${card.value.toLocaleString()}</div>
+                </div>
+              </div>
+            </div>
+          `).join('');
+
+          payrollContainer.innerHTML = `
+            <div class="row g-3">
+              ${cardsHtml}
+            </div>
+          `;
+
+        } catch (error) {
+          console.error('Error loading payroll data:', error);
+          payrollContainer.innerHTML = '<div class="col-12"><div class="alert alert-danger">Error loading payroll information.</div></div>';
+        }
+      }
+
+      function renderCards() {
+        const currentEmployeeId = parseInt(localStorage.getItem('currentEmployeeId'));
+        // Read requests array from localStorage
+        const rawRequests = localStorage.getItem('requests');
+        const allRequests = safeParse(rawRequests, []) || [];
+
+        const myRequests = Array.isArray(allRequests)
+          ? allRequests.filter(r => r && (r.employeeId == currentEmployeeId))
+          : [];
+
+        // (requestSummaryCards removed)
+
+        // Build single consolidated card content
+        const listContainer = document.getElementById('requestListCard');
+        if (!listContainer) return;
+
+        if (myRequests.length === 0) {
+          listContainer.innerHTML = `
+            <div class="col-12">
+              <div class="card border-0 shadow-sm" style="background-color: light-dark(#FFFFFF, #2B2A43);">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                  <div>
+                    <h5 class="card-title mb-1" style="color: light-dark(#0C243C, #FFFFFF);">All Requests</h5>
+                    <p class="card-text mb-0" style="color: light-dark(#97A1C0, #8C96A9);">No requests to show.</p>
+                  </div>
+                  <i class="fa-solid fa-list-ul fs-3" style="color: light-dark(#97A1C0, #8C96A9);"></i>
+                </div>
+              </div>
+            </div>
+          `;
+          return;
+        }
+
+        function statusBadge(status) {
+          const s = (status || '').toLowerCase();
+          const color = s === 'approved' ? '#22B07E' : (s === 'rejected' ? '#FF401C' : '#FDBB1F');
+          return `<span class="badge rounded-pill" style="background-color:${color};">${status}</span>`;
+        }
+
+        // Pagination: render container with controls; rows will be injected per page
+        const sortedRequests = [...myRequests]
+          .sort((a, b) => Date.parse(b?.createdAt || 0) - Date.parse(a?.createdAt || 0));
+
+        listContainer.innerHTML = `
+          <div class="col-12">
+            <div class="card border-0 shadow-sm" style="background-color: light-dark(#FFFFFF, #2B2A43);">
+              <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                  <h5 class="card-title mb-0" style="color: light-dark(#0C243C, #FFFFFF);">All Requests</h5>
+                  <i class="fa-solid fa-list-check" style="color:#316AFF;"></i>
+                </div>
+                <div class="table-responsive">
+                  <table class="table table-sm mb-2" style="color: light-dark(#0C243C, #FFFFFF);">
+                    <thead>
+                      <tr>
+                        <th scope="col">Type</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="requestTableBody">
+                    </tbody>
+                  </table>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                  <button id="prevPageBtn" class="btn btn-sm btn-outline-secondary">Prev</button>
+                  <div id="pageInfo" class="small" style="color: light-dark(#97A1C0, #8C96A9);"></div>
+                  <button id="nextPageBtn" class="btn btn-sm btn-outline-secondary">Next</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        const pageSize = 5;
+        let currentPage = window.__requestsCurrentPage || 1;
+        const tbodyEl = document.getElementById('requestTableBody');
+        const prevBtn = document.getElementById('prevPageBtn');
+        const nextBtn = document.getElementById('nextPageBtn');
+        const pageInfo = document.getElementById('pageInfo');
+
+        function buildRow(req) {
+          const type = req?.type || 'Unknown';
+          const dateStr = req?.payload?.requestedDate
+            ? new Date(req.payload.requestedDate).toLocaleDateString()
+            : (req?.createdAt ? new Date(req.createdAt).toLocaleDateString() : '-');
+          const status = req?.status || 'Pending';
+          return `
+            <tr>
+              <td style="color: light-dark(#0C243C, #FFFFFF);">${type}</td>
+              <td style="color: light-dark(#0C243C, #FFFFFF);">${dateStr}</td>
+              <td>${statusBadge(status)}</td>
+            </tr>
+          `;
+        }
+
+        function renderPage() {
+          const totalPages = Math.max(1, Math.ceil(sortedRequests.length / pageSize));
+          if (currentPage > totalPages) currentPage = totalPages;
+          if (currentPage < 1) currentPage = 1;
+          const start = (currentPage - 1) * pageSize;
+          const end = start + pageSize;
+          const pageItems = sortedRequests.slice(start, end);
+          tbodyEl.innerHTML = pageItems.map(buildRow).join('');
+          pageInfo.textContent = `Page ${totalPages === 0 ? 0 : currentPage} of ${totalPages}`;
+          prevBtn.disabled = currentPage <= 1;
+          nextBtn.disabled = currentPage >= totalPages;
+          window.__requestsCurrentPage = currentPage;
+        }
+
+        if (prevBtn && nextBtn) {
+          prevBtn.onclick = function() {
+            if (currentPage > 1) { currentPage -= 1; renderPage(); }
+          };
+          nextBtn.onclick = function() {
+            const totalPages = Math.max(1, Math.ceil(sortedRequests.length / pageSize));
+            if (currentPage < totalPages) { currentPage += 1; renderPage(); }
+          };
+        }
+
+        renderPage();
+
+        // ===== Approved summary by type card =====
+        const summaryContainer = document.getElementById('approvedSummaryCard');
+        if (summaryContainer) {
+          const knownTypes = ['Late', 'Absence', 'WFH', 'Overtime', 'Deadline Extension'];
+          const summary = knownTypes.map(t => ({
+            type: t,
+            count: myRequests.filter(r => r?.type === t && (r?.status || '').toLowerCase() === 'approved').length
+          })).filter(x => x.count > 0);
+
+          const summaryRows = (summary.length > 0)
+            ? summary.map(x => `
+                <div class="d-flex align-items-center justify-content-between py-1">
+                  <span style="color: light-dark(#0C243C, #FFFFFF);">${x.type}</span>
+                  <span class="badge rounded-pill" style="background-color:#22B07E;">${x.count}</span>
+                </div>
+              `).join('')
+            : `<div class="text-muted" style="color: light-dark(#97A1C0, #8C96A9);">No approved requests yet.</div>`;
+
+          summaryContainer.innerHTML = `
+            <div class="col-12"> 
+              <div class="card border-0 shadow-sm h-100" style="background-color: light-dark(#FFFFFF, #2B2A43);">\n                <div class="card-body">\n                  <div class="d-flex align-items-center justify-content-between mb-2">\n                    <h5 class="card-title mb-0" style="color: light-dark(#0C243C, #FFFFFF);">Approved by Type</h5>\n                    <i class="fa-solid fa-circle-check" style="color:#22B07E;"></i>\n                  </div>\n                  ${summaryRows}\n                </div>\n              </div>\n            </div>
+          `;
+        }
+      }
+
+      // Initial render
+      renderPayrollCards();
+      renderCards();
+
+      // Re-render cards when requests are updated elsewhere (e.g., form submission)
+      window.addEventListener('requests-updated', renderCards);
+
+      // Also react to cross-tab/localStorage updates coming from the manager side
+      window.addEventListener('storage', function(e) {
+        if (e.key === 'requests' || e.key === 'employeeRequests') {
+          renderCards();
+        }
+        if (e.key === 'payroll') {
+          renderPayrollCards();
+        }
+      });
+    });
+  </script>
 </body>
 
 </html>
