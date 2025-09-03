@@ -1,4 +1,3 @@
-/* =====================================Root Colors===================================== */
 :root {
     color-scheme: light dark;
 
@@ -68,7 +67,7 @@ h6,
     font-weight: 500;
     /* text-transform: uppercase; */
     letter-spacing: .08em;
-    color: var(--theme-subtext);
+    color: var(--theme-text);
 }
 
 
@@ -115,6 +114,11 @@ p {
     justify-content: center;
 }
 
+#themeToggle i {
+    color: #4e4b4b !important;
+
+}
+
 #logoutBtn {
     font-size: 1.2rem;
     color: var(--theme-text);
@@ -140,10 +144,10 @@ p {
     font: sans-serif;
 }
 
-.text-muted {
+/* .text-muted {
     color: var(--theme-subtext);
     font-size: 0.875rem;
-}
+} */
 
 
 a,
@@ -182,7 +186,7 @@ body.dark-theme .search-background .input-group-text {
     color: #326dbf;
 }
 
-.filter-buttons{
+.filter-buttons {
     background-color: transparent;
     border: none;
 }
@@ -231,12 +235,12 @@ body.dark-theme .search-background .input-group-text {
 
 .light-theme #themeToggle i {
     color: var(--sub-text-clr-light);
-    
+
 }
 
 .dark-theme #themeToggle i {
     color: var(--sub-text-clr-dark);
-    
+
 }
 
 /* Light theme pagination */
@@ -319,28 +323,79 @@ body.dark-theme .search-background .input-group-text {
     border: 1px solid var(--theme-border);
     border-radius: 1rem;
     padding: 1rem;
-    min-height: 300px;
+    height: 70vh;
+
+    overflow-y: auto;
+
     color: var(--theme-text);
+    display: flex;
+    flex-direction: column;
 }
 
 .kanban-col h6 {
     text-transform: uppercase;
     letter-spacing: .08em;
     color: var(--theme-subtext);
+
+
+    top: 0;
+    background: inherit;
+
+    padding: 0.5rem 0;
+    z-index: 5;
 }
 
+
+
+/* Light mode adjustments */
 .task-card {
-    background: light-dark(var(--secondary-bg-clr-light), transparent);
-    border: 1px solid var(--theme-border);
-    border-radius: .75rem;
-    padding: .75rem;
-    margin-bottom: .75rem;
-    color: var(--theme-text);
+    background-color: transparent;
+    color: #212529;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.task-card .title {
-    font-weight: 600;
+.task-card .task-title {
+    color: light-dark(var(--theme-text), var(--theme-text));
 }
+
+
+.task-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Dark mode (Bootstrap 5 data-bs-theme="dark") */
+[data-bs-theme="dark"] .task-card {
+    background-color: #2b2b2b;
+    color: transparent !important;
+}
+
+[data-bs-theme="dark"] .task-card .task-title {
+    color: transparent !important;
+}
+
+[data-bs-theme="dark"] .task-card small {
+    color: transparent !important;
+}
+
+.task-text {
+    color: var(--theme-text);
+    
+}
+
+#qvTaskDesc {
+    font-size: 1rem;
+
+    line-height: 1.6;
+
+    color: #e0e0e0;
+
+    font-weight: 400;
+
+}
+
+
 
 .priority-Low {
     border-left: 4px solid var(--green-clr);

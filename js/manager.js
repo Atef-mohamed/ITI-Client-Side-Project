@@ -32,6 +32,7 @@ function initData() {
     fetch("../data.json")
         .then(function (res) { return res.json(); })
         .then(function (data) {
+
             db.employees = data.employees || [];
             db.attendance = data.attendanceRecords || [];
             db.requests = data.permissionRequests || [];
@@ -42,6 +43,8 @@ function initData() {
         })
         .catch(function (err) { console.error("Error loading data.json:", err); });
 }
+
+
 
 function empName(id) {
     for (var i = 0; i < db.employees.length; i++) {
@@ -74,7 +77,7 @@ function setActivePage(key) {
     if (key === 'reports') renderReports();
 }
 
-//belongs to renderApprovals
+//renderApprovals
 function typeBadge(type) {
     var map = {
         Late: '#FF401C',
@@ -89,14 +92,14 @@ function typeBadge(type) {
     return '<span class="badge" style="background:#E8EBF1;color:' + color + ';">' + type + '</span>';
 }
 
-//belongs to renderApprovals
+//renderApprovals
 function statusBadge(s) {
     var map = { Pending: 'warning', Approved: 'success', Rejected: 'danger' };
     var cls = map[s] || 'secondary';
     return '<span class="badge bg-' + cls + '">' + s + '</span>';
 }
 
-//belongs to renderApprovals
+//renderApprovals
 function detailForRequest(r) {
     if (r.type === 'Late') return 'Late ~' + (r.payload && r.payload.minutesExpectedLate ? r.payload.minutesExpectedLate : '') + ' min · ' + (r.payload && r.payload.reason ? r.payload.reason : '');
     if (r.type === 'Leave') return 'Leave · ' + (r.payload && r.payload.reason ? r.payload.reason : '');
@@ -107,45 +110,8 @@ function detailForRequest(r) {
     return '';
 }
 
-// function renderApprovals() {
-//     var tbody = document.querySelector('#requestsTable tbody');
-//     if (!tbody) return;
-//     tbody.innerHTML = '';
-//     var q = '';
-//     var searchEl = document.getElementById('searchRequests');
-//     if (searchEl && searchEl.value) q = searchEl.value.toLowerCase();
 
-//     var rows = [];
-//     for (var i = 0; i < db.requests.length; i++) {
-//         var r = db.requests[i];
-//         if (window.approvalsFilter && window.approvalsFilter !== 'All' && r.type !== window.approvalsFilter) continue;
-//         var str = empName(r.employeeId) + ' ';
-//         if (r.payload && r.payload.reason) str += r.payload.reason;
-//         if (str.toLowerCase().indexOf(q) === -1) continue;
-//         rows.push(r);
-//     }
-//     rows.sort(function (a, b) { return new Date(b.createdAt) - new Date(a.createdAt); });
 
-//     for (var j = 0; j < rows.length; j++) {
-//         var r2 = rows[j];
-//         var tr = document.createElement('tr');
-//         tr.innerHTML =
-//             '<td><input type="checkbox" class="rowChk" data-id="' + r2.id + '" /></td>' +
-//             '<td>' + (j + 1) + '</td>' +
-//             '<td>' + empName(r2.employeeId) + '</td>' +
-//             '<td>' + typeBadge(r2.type) + '</td>' +
-//             '<td>' + (r2.payload && r2.payload.requestedDate ? r2.payload.requestedDate : '-') + '</td>' +
-//             '<td class="small text-secondary">' + detailForRequest(r2) + '</td>' +
-//             '<td class="text-center">' + statusBadge(r2.status) + '</td>' +
-//             '<td>' +
-//             '<button class="btn btn-success btn-sm me-1"' + (r2.status !== 'Pending' ? ' disabled' : '') + ' data-action="approve" data-id="' + r2.id + '"><i class="bi bi-check2"></i></button>' +
-//             '<button class="btn btn-danger btn-sm"' + (r2.status !== 'Pending' ? ' disabled' : '') + ' data-action="reject" data-id="' + r2.id + '"><i class="bi bi-x"></i></button>' +
-//             '</td>';
-//         tbody.appendChild(tr);
-//     }
-//     var selAll = document.getElementById('selectAllRequests');
-//     if (selAll) selAll.checked = false;
-// }
 window.approvalsPage = 1;
 window.approvalsPageSize = 5;
 
@@ -208,7 +174,7 @@ function renderApprovals() {
 function renderApprovalsPagination(totalPages, currentPage) {
     var container = document.getElementById('approvalsPagination');
     if (!container) {
-       
+
         var table = document.getElementById('requestsTable');
         if (!table) return;
         container = document.createElement('nav');
@@ -238,7 +204,7 @@ function renderApprovalsPagination(totalPages, currentPage) {
     prevLi.appendChild(prevBtn);
     ul.appendChild(prevLi);
 
-    // Page numbers (show max 5 pages)
+    // Page numbers (window.approvalsPageSize = 5;)
     var start = Math.max(1, currentPage - 2);
     var end = Math.min(totalPages, start + 4);
     if (end - start < 4) start = Math.max(1, end - 4);
@@ -258,7 +224,7 @@ function renderApprovalsPagination(totalPages, currentPage) {
         ul.appendChild(li);
     }
 
-    
+
     var nextLi = document.createElement('li');
     nextLi.className = 'page-item' + (currentPage === totalPages ? ' disabled' : '');
     var nextBtn = document.createElement('button');
@@ -318,39 +284,150 @@ function renderAttendance() {
     renderHeatmap()
 }
 
+
+
+
 function renderTasks() {
-    var statuses = ["Pending", "Ongoing", "Missed", "Completed"];
-    for (var i = 0; i < statuses.length; i++) {
-        var col = document.getElementById("col-" + statuses[i]);
-        if (col) col.innerHTML = '';
-    }
-    var tasks = db.tasks.slice();
-    tasks.sort(function (a, b) { return new Date(a.deadline) - new Date(b.deadline); });
 
-    var now = Date.now();
-    var overdue = [];
-    for (var j = 0; j < tasks.length; j++) {
-        var t = tasks[j];
-        var isOverdue = new Date(t.deadline).getTime() < now && t.status !== "Completed" && !t.extensionApproved;
-        if (isOverdue) overdue.push(t);
+    document.querySelectorAll(".kanban-list").forEach(list => list.innerHTML = "");
 
-        var card = document.createElement("div");
-        card.className = "task-card priority-" + t.priority;
-        card.innerHTML =
-            '<div class="d-flex justify-content-between align-items-start">' +
-            '<div>' +
-            '<div class="title">' + t.title + '</div>' +
-            '<div class="small text-secondary">' + t.priority + ' · Due ' + new Date(t.deadline).toLocaleString() + '</div>' +
-            '<div class="small">Assignees: ' + t.assignees.map(empName).join(", ") + '</div>' +
-            '</div>' +
-            '<div class="btn-group btn-group-sm">' +
-            (t.status !== "Completed" ? '<button class="btn btn-outline-success" data-act="advance" data-id="' + t.taskId + '"><i class="bi bi-arrow-right-circle"></i></button>' : '') +
-            '<button class="btn btn-outline-info" data-act="edit" data-id="' + t.taskId + '"><i class="bi bi-pencil"></i></button>' +
-            '</div>' +
-            '</div>';
-        var col2 = document.getElementById("col-" + t.status);
-        if (col2) col2.appendChild(card);
-    }
+    const today = new Date();
+
+    db.tasks.forEach(task => {
+
+        let taskStatus = task.status;
+        // if (task.deadline && new Date(task.deadline) < today && task.status !== "Completed") {
+        //     taskStatus = "Missed";
+        // }
+
+
+        let card = document.createElement("div");
+        card.className = "card mb-3 rounded-4 shadow-sm task-card";
+
+
+        const borderColorMap = {
+            Low: "success",
+            Medium: "warning",
+            High: "danger",
+            Critical: "danger"
+        };
+        const borderColor = borderColorMap[task.priority] || "secondary";
+        card.classList.add("border-0", "border-start", "border-3", `border-${borderColor}`);
+
+
+        const deadline = task.deadline ? new Date(task.deadline).toLocaleDateString() : "No deadline";
+
+
+        card.innerHTML = `
+    <div class="card-body p-3 d-flex flex-column justify-content-between" style="min-height: 160px;">
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <h6 class="fw-bold mb-1 task-text">${task.title}</h6>
+                <small class="task-text d-block mb-2"><i class="bi bi-flag me-1"></i> ${task.priority}</small>
+                <small class="task-text d-block"><i class="bi bi-calendar-event me-1"></i> ${deadline}</small>
+            </div>
+            <div class="ms-2 text-nowrap">
+                <button class="btn btn-sm btn-outline-primary edit-btn">
+                    <i class="bi bi-pencil"></i>
+                </button>
+            </div>
+        </div>
+
+        ${taskStatus === "Missed" ? `
+        <div class="d-flex mt-3">
+            <input type="number" id="extendDays-${task.taskId}" class="form-control form-control-sm me-2" 
+                   placeholder="Days" min="1" style="max-width: 80px; max-height: 38px;">
+            <button class="btn btn-success extend-btn" style="max-height: 38px; font-size: 10px;">
+                <i class="bi bi-arrow-repeat me-1"></i> Extend days
+            </button>
+        </div>` : ""}
+    </div>
+`;
+
+
+        card.style.cursor = "pointer";
+        card.addEventListener("click", () => openQuickViewModal(task));
+
+        const editBtn = card.querySelector(".edit-btn");
+        editBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            openTaskModal(task.taskId);
+        });
+
+        const extendInput = card.querySelector(`#extendDays-${task.taskId}`);
+        if (extendInput) {
+            extendInput.addEventListener("click", (e) => e.stopPropagation());
+        }
+
+        const extendBtn = card.querySelector(".extend-btn");
+        if (extendBtn) {
+            extendBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const days = extendInput.value;
+                if (!days || days < 1) {
+                    alert("Please enter a valid number of days.");
+                    return;
+                }
+                moveToOngoing(task.taskId, parseInt(days));
+            });
+        }
+
+        const col = document.getElementById("col-" + taskStatus);
+        if (col) col.appendChild(card);
+    });
+}
+
+
+
+
+function openQuickViewModal(task) {
+    document.getElementById("qvTaskTitle").textContent = task.title;
+    document.getElementById("qvTaskDesc").textContent = task.description || "No description";
+    document.getElementById("qvTaskPriority").textContent = task.priority;
+    document.getElementById("qvTaskStatus").textContent = task.status;
+    document.getElementById("qvTaskDeadline").textContent = task.deadline
+        ? new Date(task.deadline).toLocaleString()
+        : "No deadline";
+
+
+    let assigneeNames = task.assignees && task.assignees.length > 0
+        ? task.assignees.map(id => {
+            let emp = db.employees.find(e => e.id === id);
+            return emp ? emp.name : `User#${id}`;
+        }).join(", ")
+        : "None";
+    document.getElementById("qvTaskAssignees").textContent = assigneeNames;
+
+
+    document.getElementById("qvEditBtn").onclick = () => {
+        bootstrap.Modal.getInstance(document.getElementById("taskQuickViewModal")).hide();
+        openTaskModal(task);
+    };
+
+    new bootstrap.Modal(document.getElementById("taskQuickViewModal")).show();
+}
+
+
+
+function moveToOngoing(taskId) {
+    let task = db.tasks.find(t => t.taskId === taskId);
+    if (!task) return;
+
+
+    let daysInput = document.getElementById(`extendDays-${taskId}`);
+    let days = daysInput && daysInput.value ? parseInt(daysInput.value, 10) : 1;
+
+
+    let currentDeadline = task.deadline ? new Date(task.deadline) : new Date();
+    currentDeadline.setDate(currentDeadline.getDate() + days);
+    task.deadline = currentDeadline.toISOString();
+
+
+    task.status = "Ongoing";
+    task.updatedAt = new Date().toISOString();
+
+    saveToStorage();
+    renderTasks();
 }
 
 function advanceTask(id) {
@@ -384,12 +461,10 @@ function openTaskModal(task) {
     if (prioEl) prioEl.value = task && task.priority ? task.priority : 'Low';
     if (descEl) descEl.value = task && task.description ? task.description : '';
     if (deadlineEl) deadlineEl.value = task && task.deadline ? new Date(task.deadline).toISOString().slice(0, 16) : '';
-    if (sel && task && task.assignees) {
-        for (var i = 0; i < sel.options.length; i++) {
-            sel.options[i].selected = false;
-            for (var j = 0; j < task.assignees.length; j++) {
-                if (parseInt(sel.options[i].value, 10) === task.assignees[j]) sel.options[i].selected = true;
-            }
+    if (task && task.assignees) {
+        for (var i = 0; i < task.assignees.length; i++) {
+            var chk = document.getElementById("assignee-" + task.assignees[i]);
+            if (chk) chk.checked = true;
         }
     }
     new bootstrap.Modal(document.getElementById('taskModal')).show();
@@ -407,12 +482,10 @@ function saveTaskFromModal() {
     for (var j = 0; j < db.tasks.length; j++) {
         if (db.tasks[j].taskId == id) existing = db.tasks[j];
     }
-    var sel = document.getElementById("taskAssignees");
     var assignees = [];
-    if (sel) {
-        for (var k = 0; k < sel.selectedOptions.length; k++) {
-            assignees.push(parseInt(sel.selectedOptions[k].value, 10));
-        }
+    var chks = document.querySelectorAll("#taskAssignees input[type=checkbox]:checked");
+    for (var k = 0; k < chks.length; k++) {
+        assignees.push(parseInt(chks[k].value, 10));
     }
     var t = {
         taskId: id,
@@ -440,17 +513,33 @@ function saveTaskFromModal() {
 }
 
 function TaskAssignees() {
-    var sel = document.getElementById('taskAssignees');
-    if (!sel) return;
-    sel.innerHTML = '';
+    var container = document.getElementById('taskAssignees');
+    if (!container) return;
+    container.innerHTML = '';
+
     for (var i = 0; i < db.employees.length; i++) {
         var e = db.employees[i];
-        var opt = document.createElement('option');
-        opt.value = e.id;
-        opt.textContent = e.name;
-        sel.appendChild(opt);
+
+        var div = document.createElement('div');
+        div.className = "form-check";
+
+        var input = document.createElement('input');
+        input.type = "checkbox";
+        input.className = "form-check-input";
+        input.id = "assignee-" + e.id;
+        input.value = e.id;
+
+        var label = document.createElement('label');
+        label.className = "form-check-label";
+        label.setAttribute("for", "assignee-" + e.id);
+        label.textContent = e.name;
+
+        div.appendChild(input);
+        div.appendChild(label);
+        container.appendChild(div);
     }
 }
+
 function renderReports() {
 
     var tasks = db.tasks;
@@ -664,7 +753,68 @@ function setupApprovalsFilter() {
 }
 
 
+let employee = localStorage.getItem("employee");
 
+if (employee) {
+    employee = JSON.parse(employee);
+
+    //  #userName div
+    const nameEl = document.getElementById("userName");
+    if (nameEl) {
+        nameEl.textContent = employee.name;
+    }
+
+
+}
+
+
+document.getElementById("saveTaskBtn").addEventListener("click", saveTask);
+
+function saveTask() {
+    const taskId = document.getElementById("taskId").value;
+    const title = document.getElementById("taskTitle").value.trim();
+    const priority = document.getElementById("taskPriority").value;
+    const description = document.getElementById("taskDesc").value.trim();
+    const deadline = document.getElementById("taskDeadline").value;
+    const assignees = Array.from(document.querySelectorAll("#taskAssignees input[type=checkbox]:checked"))
+        .map(cb => cb.value);
+
+    // Validation
+    if (!title) {
+        alert("Please enter a task title.");
+        return;
+    }
+    if (!priority) {
+        alert("Please select a priority.");
+        return;
+    }
+    if (!description) {
+        alert("Please enter a description.");
+        return;
+    }
+    if (!deadline) {
+        alert("Please select a deadline.");
+        return;
+    }
+    if (assignees.length === 0) {
+        alert("Please select at least one assignee.");
+        return;
+    }
+
+
+
+
+    saveToStorage();
+    renderTasks();
+    closeTaskModal();
+    toast("Task saved successfully");
+}
+
+
+function closeTaskModal() {
+    const modal = bootstrap.Modal.getInstance(document.getElementById('taskModal'));
+    if (modal) modal.hide();
+}
 
 function renderAll() {
     renderApprovals();
@@ -678,6 +828,8 @@ document.addEventListener('DOMContentLoaded', function () {
     initTheme();
     initData();
     setupApprovalsFilter();
+
+
 });
 
 document.getElementById('saveTaskBtn').addEventListener('click', saveTaskFromModal);
@@ -783,55 +935,52 @@ function initTheme() {
     }
 }
 
-// logoutBtn.addEventListener("click", () => {
-//     const isLoggedIn = localStorage.getItem("employee");
-//     console.log(isLoggedIn);
-// })
 
-// logoutBtn.addEventListener("click", () => {
-//     const isLoggedIn = localStorage.getItem("employee");
 
-//     if (!isLoggedIn) {
-//         swal({
-//             title: "No active session!",
-//             text: "You're not logged in to logout.",
-//             icon: "error",
-//             buttons: false,
-//             timer: 2000,
-//         });
-//         return;
-//     }
+logoutBtn.addEventListener("click", () => {
+    const isLoggedIn = localStorage.getItem("employee");
 
-//     swal({
-//         title: "Are you sure?",
-//         text: "Once you logout, you will need to login again to access this page.",
-//         icon: "warning",
-//         buttons: true,
-//         dangerMode: true,
-//     }).then((willLogout) => {
-//         if (willLogout) {
-//             localStorage.removeItem("employee");
+    if (!isLoggedIn) {
+        swal({
+            title: "No active session!",
+            text: "You're not logged in to logout.",
+            icon: "error",
+            buttons: false,
+            timer: 2000,
+        });
+        return;
+    }
 
-//             swal({
-//                 title: "Logged out!",
-//                 text: "You have successfully logged out.",
-//                 icon: "success",
-//                 timer: 1500,
-//                 buttons: false,
-//             }).then(() => {
-//                 window.location.replace("login.html");
-//             });
-//         } else {
-//             swal({
-//                 title: "Cancelled",
-//                 text: "You're still logged in!",
-//                 icon: "info",
-//                 buttons: false,
-//                 timer: 2000,
-//             });
-//         }
-//     });
-// });
+    swal({
+        title: "Are you sure?",
+        text: "Once you logout, you will need to login again to access this page.",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then((willLogout) => {
+        if (willLogout) {
+            localStorage.removeItem("employee");
+
+            swal({
+                title: "Logged out!",
+                text: "You have successfully logged out.",
+                icon: "success",
+                timer: 1500,
+                buttons: false,
+            }).then(() => {
+                window.location.replace("login.html");
+            });
+        } else {
+            swal({
+                title: "Cancelled",
+                text: "You're still logged in!",
+                icon: "info",
+                buttons: false,
+                timer: 2000,
+            });
+        }
+    });
+});
 
 
 // Export Attendance Table to CSV
