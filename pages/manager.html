@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../css/all.min.css">
   <link rel="stylesheet" href="../css/manager.css">
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 
 </head>
@@ -39,17 +40,18 @@
             Data</button> -->
           <button class="btn btn-outline-warning btn-sm" id="resetBtn"><i class="bi bi-recycle me-1"></i>Reset</button>
           <button id="themeToggle" class="btn"><i class="bi bi-brightness-high-fill"></i></button>
-          <div id="userName" class="d-none d-md-inline text-secondary">
-            <a href="#" class="d-flex align-items-center py-2" data-bs-toggle="dropdown" data-bs-auto-close="outside"
-              aria-expanded="false">
+          <div class="d-none d-md-inline text-secondary">
+            <a href="#" class="d-flex align-items-center py-2 text-decoration-none" data-bs-toggle="dropdown"
+              data-bs-auto-close="outside" aria-expanded="false">
               <div class="text-end me-2 d-none d-lg-inline-block">
-                <div class="fw-bold ">add name</div>
-                <small class="d-block lh-sm " ">
-                  Manager <i class=" text-3xs me-1 bi bi-briefcase " ></i> 
+                <div class="fw-bold text-center " id="userName">Name</div>
+                <small class="d-block lh-sm ">
+                  Manager <i class=" text-3xs me-1 bi bi-briefcase "></i>
                 </small>
               </div>
-              <div class=" avatar avatar-sm rounded-circle avatar-status-success">
-                  <img src="../assets/images/8777756d6e503a6a7d6d946dcc6cf2aa6c058d6d.png" alt="photo">
+              <div>
+                <img src="../assets/images/8777756d6e503a6a7d6d946dcc6cf2aa6c058d6d.png"
+                  class="avatar avatar-sm rounded-circle" style="width: 30px; height: 30px;" alt="photo">
               </div>
             </a>
 
@@ -103,7 +105,7 @@
                   <th>Employee</th>
                   <th>Type</th>
                   <th>Requested Date</th>
-                  <th >Details</th>
+                  <th>Details</th>
                   <th>Status</th>
                   <th>Actions</th>
                 </tr>
@@ -132,7 +134,7 @@
             <h6 class="text-secondary">Attendance Table</h6>
             <div class="table-responsive scroll-y">
               <table class="table align-middle" id="attendanceTable">
-                <thead>
+                <thead class="sticky-top">
                   <tr>
                     <th>Date</th>
                     <th>Employee</th>
@@ -183,38 +185,42 @@
             class="bi bi-plus-circle me-1"></i>New Task</button>
       </div>
 
-      <div class="row g-3 mb-3">
-        <div class="col-md-8">
-          <div class="kanban" id="kanban">
-            <div class="kanban-col" data-status="Pending">
-              <h6>To Do</h6>
-              <div class="kanban-list" id="col-Pending"></div>
-            </div>
-            <div class="kanban-col" data-status="Ongoing">
-              <h6>In Progress</h6>
-              <div class="kanban-list" id="col-Ongoing"></div>
-            </div>
-            <div class="kanban-col" data-status="Missed">
-              <h6>Missed</h6>
-              <div class="kanban-list" id="col-Missed"></div>
-            </div>
-            <div class="kanban-col" data-status="Completed">
-              <h6>Done</h6>
-              <div class="kanban-list" id="col-Completed"></div>
-            </div>
+      <div class="row g-3 mb-3" id="kanban">
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="kanban-col" data-status="Pending">
+            <h6 class="text-primary">To Do</h6>
+            <div class="kanban-list" id="col-Pending"></div>
           </div>
         </div>
-        <div class="col-md-4">
-          <div class="card p-3 shadow-soft rounded-2xl mb-3">
-            <h6 class="text-secondary">Needs Attention (Overdue)</h6>
-            <div id="overdueList" class="scroll-y" style="max-height:220px"></div>
+
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="kanban-col" data-status="Ongoing">
+            <h6 class="text-warning">In Progress</h6>
+            <div class="kanban-list" id="col-Ongoing"></div>
           </div>
-          <div class="card p-3 shadow-soft rounded-2xl">
-            <h6 class="text-secondary">Deadline Extensions</h6>
-            <div id="extRequests" class="scroll-y" style="max-height:260px"></div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="kanban-col" data-status="Missed">
+            <h6 class="text-danger">Missed</h6>
+            <div class="kanban-list" id="col-Missed"></div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-3 ">
+          <div class="kanban-col " data-status="Completed">
+            <div class="sticky-top">
+              <h6 class="text-success">Done</h6>
+            </div>
+            <div class="kanban-list" id="col-Completed"></div>
           </div>
         </div>
       </div>
+
+      
+      </div>
+
+
     </section>
 
     <!-- Reports Page -->
@@ -309,7 +315,10 @@
             </div>
             <div class="col-md-6">
               <label class="form-label">Assignees</label>
-              <select id="taskAssignees" class="form-select" multiple></select>
+              <div id="taskAssignees" class="border rounded p-2"
+                style="max-height: 150px; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+
+              </div>
             </div>
           </form>
         </div>
@@ -341,7 +350,64 @@
     </div>
   </div>
 
-  <!-- <footer class="text-center text-secondary small my-4">Manager Module v2</footer> -->
+  <!-- Task Quick View Modal -->
+  <div class="modal fade" id="taskQuickViewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content task-modal">
+        <div class="modal-header border-0 pb-0">
+          <div>
+            <h5 id="qvTaskTitle" class="fw-bold mb-1"></h5>
+
+          </div>
+        </div>
+
+        <div class="modal-body container">
+          <p id="qvTaskDesc" class="text-muted mb-4"></p>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="info-box">
+                <span class="fw-bold text-secondary">Priority</span>
+                <div id="qvTaskPriority" class="badge rounded-pill bg-primary"></div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="info-box">
+                <span class="fw-bold text-secondary">Status</span>
+                <div id="qvTaskStatus" class="badge rounded-pill bg-secondary"></div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="info-box">
+                <span class="fw-bold text-secondary">Deadline</span>
+                <div id="qvTaskDeadline"></div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="info-box">
+                <span class="fw-bold text-secondary">Assignees</span>
+                <div id="qvTaskAssignees" class="d-flex flex-wrap"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="qvEditBtn">
+            <i class="bi bi-pencil me-1"></i> Edit Task
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- <footer class="text-center text-secondary small my-4">Manager Module v3</footer> -->
 
   <script src="../js/bootstrap.bundle.min.js"></script>
   <script src="../js/all.min.js"></script>
