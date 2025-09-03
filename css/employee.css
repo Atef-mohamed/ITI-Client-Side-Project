@@ -1,5 +1,677 @@
-*{
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+* {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
 }
+
+:root {
+    color-scheme: light dark;
+
+    --primary-clr: #316AFF;
+    --white-clr: #FFFFFF;
+    --blue-clr: #02B4FA;
+    --green-clr: #22B07E;
+    --red-clr: #FF401C;
+    --orange-clr: #FF8110;
+    --yellow-clr: #FDBB1F;
+    --blue-clr: rgb(2, 180, 250, 0.1);
+    --green-clr: rgb(34, 176, 126, 0.1);
+    --red-clr: rgb(255, 64, 28, 0.1);
+    --orange-clr: rgb(255, 129, 16, 0.1);
+    --yellow-clr: rgb(253, 187, 31, 0.1);
+
+    --lt-primary-bg-clr: #FBFBFB;
+    --lt-secondary-bg-clr: #FFFFFF;
+    --lt-main-text-clr: #0C243C;
+    --lt-sub-text-clr: #97A1C0;
+    --lt-border-clr: #E8EBF1;
+
+    --drk-primary-bg-clr: #28273D;
+    --drk-secondary-bg-clr: #2B2A43;
+    --drk-main-text-clr: #FFFFFF;
+    --drk-sub-text-clr: #8C96A9;
+    --drk-border-clr: #3A3B4D;
+}
+
+body {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    background-color: light-dark(#FBFBFB, #28273D);
+}
+
+header {
+    background-color: light-dark(#FFFFFF, #2B2A43);
+    padding: 10px 0;
+    border-bottom: 1px solid light-dark(#E8EBF1, #3A3B4D);
+}
+
+header .logo {
+    color: light-dark(#0C243C, #FFFFFF);
+}
+
+.logo-img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.logo:hover .logo-img {
+    transform: scale(1.05);
+}
+
+header button {
+    width: 35px;
+    height: 35px;
+    background-color: transparent;
+    color: light-dark(#97A1C0, #8C96A9);
+}
+
+/* Employee Profile Styles */
+.employee-profile {
+    padding: 8px 12px;
+    border-radius: 12px;
+    background-color: light-dark(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    border: 1px solid light-dark(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+    transition: all 0.3s ease;
+}
+
+.employee-profile:hover {
+    background-color: light-dark(rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08));
+    transform: translateY(-1px);
+}
+
+.employee-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid light-dark(#E8EBF1, #3A3B4D);
+}
+
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.employee-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.employee-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: light-dark(#0C243C, #FFFFFF);
+    line-height: 1.2;
+}
+
+.employee-role {
+    font-size: 0.75rem;
+    color: light-dark(#97A1C0, #8C96A9);
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+/* Logout Button Styles */
+#logoutBtn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 1px solid #dc3545;
+    color: #dc3545;
+    background-color: transparent;
+}
+
+#logoutBtn:hover {
+    background-color: #dc3545;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+#logoutBtn:active {
+    transform: translateY(0);
+}
+
+/* Theme Toggle Button Update */
+#theme-toggle {
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+#theme-toggle:hover {
+    background-color: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.1));
+    transform: translateY(-1px);
+}
+
+/* ======================================== */
+/* ======================================== */
+
+/* Attendance Section Styles */
+.attendance-section {
+    background-color: light-dark(#FFFFFF, #2B2A43);
+    border: 1px solid light-dark(#E8EBF1, #3A3B4D);
+    border-radius: 20px;
+}
+
+.attendance-section .title {
+    color: light-dark(#0C243C, #FFFFFF);
+}
+
+.attendance-section .form-control {
+    background-color: light-dark(#e8ebf14d, #3a3b4d4d);
+    border: 1px solid light-dark(#E8EBF1, #3A3B4D);
+    color: light-dark(#0C243C, #FFFFFF);
+}
+
+.attendance-section .form-control:focus {
+    background-color: transparent;
+    border-color: #4a6cf7;
+    box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.1);
+    color: light-dark(#0C243C, #FFFFFF);
+}
+
+.attendance-section .btn-primary {
+    background-color: #316AFF;
+    border-color: #316AFF;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.attendance-section .btn-primary:hover {
+    background-color: #2257db;
+    border-color: #2257db;
+    transform: translateY(-1px);
+}
+
+.attendance-section .table th {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: light-dark(#0C243C, #FFFFFF);
+    border-bottom: 1px solid light-dark(#E8EBF1, #3A3B4D);
+}
+
+.attendance-section .table td {
+    font-size: 0.9rem;
+    color: light-dark(#0C243C, #FFFFFF);
+    border-bottom: 1px solid light-dark(#E8EBF1, #3A3B4D);
+}
+
+.attendance-section .text-secondary {
+    color: light-dark(#97A1C0, #8C96A9) !important;
+}
+
+/* Attendance Status Badges */
+.attendance-status-present {
+    background-color: #22B07E;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.attendance-status-absent {
+    background-color: #FF401C;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.attendance-status-late {
+    background-color: #FDBB1F;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* ======================================== */
+/* ======================================== */
+
+.kanban-container {
+    background-color: light-dark(#FFFFFF, #2B2A43);
+    border: 1px solid light-dark(#E8EBF1, #3A3B4D);
+    border-radius: 20px;
+}
+
+.kanban-container .title {
+    color: light-dark(#0C243C, #FFFFFF);
+}
+
+.kanban-board {
+    display: flex;
+    gap: 20px;
+}
+
+.kanban-column {
+    flex: 1;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    max-width: 32%;
+    border-top: 5px solid red;
+}
+
+#todo-column {
+    background-color: rgb(2, 180, 250, 0.1);
+    border-color: #02B4FA;
+}
+
+#progress-column {
+    background-color: rgb(255, 129, 16, 0.1);
+    border-color: #FF8110;
+}
+
+#done-column {
+    background-color: rgb(34, 176, 126, 0.1);
+    border-color: #22B07E;
+}
+
+.kanban-column-header {
+    padding: 15px 20px;
+    color: white;
+    font-weight: bold;
+}
+
+#todo-column .kanban-column-header {
+    color: #02B4FA;
+}
+
+#progress-column .kanban-column-header {
+    color: #FF8110;
+
+}
+#done-column .kanban-column-header {
+    color: #22B07E;
+}
+
+.kanban-column-header .badge {
+    width: 35px;
+    height: 35px;
+}
+
+#todo-column .kanban-column-header .badge {
+    background-color: #02B4FA;
+}
+
+#progress-column .kanban-column-header .badge {
+    background-color: #FF8110;
+
+}
+#done-column .kanban-column-header .badge {
+    background-color: #22B07E;
+}
+
+.kanban-tasks {
+    padding: 20px;
+    flex-grow: 1;
+    min-height: 400px;
+}
+
+.kanban-task {
+    background-color: light-dark(#FFFFFF, #2B2A43);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    cursor: grab;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.kanban-task:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.1);
+}
+
+.kanban-task:active {
+    cursor: grabbing;
+}
+
+.task-title {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: light-dark(#0C243C, #FFFFFF );
+}
+
+.task-description {
+    font-size: 0.9rem;
+    color: light-dark(#97A1C0, #8C96A9 );
+    margin-bottom: 15px;
+}
+
+.task-dates {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    margin-bottom: 15px;
+    border-radius: 6px;
+}
+
+.date-label {
+    color: light-dark(#0C243C, #FFFFFF );
+}
+
+.date-value {
+    color: light-dark(#97A1C0, #8C96A9 );
+}
+
+.priority-high {
+    background-color: #FF401C;
+    color: white;
+    padding: 5px 15px;
+}
+
+.priority-medium {
+    background-color: #FDBB1F;
+    color: white;
+    padding: 5px 15px;
+}
+
+.priority-low {
+    background-color: #22B07E;
+    color: white;
+}
+
+.dragging {
+    opacity: 0.6;
+    transform: rotate(5deg);
+}
+
+.kanban-column.over {
+    background-color: rgba(236, 240, 241, 0.9);
+}
+
+.empty-column-message {
+    text-align: center;
+    color: #636e72;
+    font-style: italic;
+    padding: 20px 0;
+}
+
+@media (max-width: 992px) {
+    .kanban-board {
+        flex-wrap: wrap;
+    }
+    .kanban-column {
+        min-width: 100%;
+        max-width: 100%;
+        margin-bottom: 20px;
+    }
+}
+
+/* Mobile Responsive Header */
+@media (max-width: 768px) {
+    header .container {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px 0;
+    }
+    
+    .employee-profile {
+        order: 1;
+    }
+    
+    .d-flex.align-items-center.gap-3 {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+    }
+    
+    .employee-profile {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    #theme-toggle {
+        order: 2;
+    }
+    
+    #logoutBtn {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .employee-info {
+        align-items: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .employee-profile {
+        padding: 6px 10px;
+    }
+    
+    .employee-avatar {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .employee-name {
+        font-size: 0.85rem;
+    }
+    
+    .employee-role {
+        font-size: 0.7rem;
+    }
+    
+    #logoutBtn {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+}
+
+/* ======================================== */
+/* ======================================== */
+
+.calender-section {
+}
+
+
+.request-section .box {
+    background-color: light-dark(#FFFFFF, #2B2A43);
+    border: 1px solid light-dark(#E8EBF1, #3A3B4D);
+    border-radius: 20px;
+}
+
+.request-section .title {
+    font-weight: bold;
+    color: light-dark(#0C243C, #FFFFFF);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: light-dark(#0C243C, #FFFFFF);
+    display: block;
+}
+
+.form-control {
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid light-dark(#E8EBF1, #3A3B4D);
+    background-color: light-dark(#e8ebf14d, #3a3b4d4d);
+    color: light-dark(#0C243C, #FFFFFF);
+    transition: all 0.3s;
+}
+
+.form-control:focus {
+    background-color: transparent;
+    border-color: #4a6cf7;
+    box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.1);
+    color: light-dark(#0C243C, #FFFFFF);
+}
+
+.request-section form select option {
+    background-color: light-dark(#FFFFFF, #2B2A43);
+}
+
+
+.btn-submit {
+    background-color: #316AFF;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    width: 100%;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-submit:hover {
+    background-color: #2257db;
+    transform: translateY(-2px);
+}
+
+.dynamic-field {
+    transition: all 0.3s ease;
+}
+
+.optional-text {
+    font-size: 0.85rem;
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* ======================================== */
+/* Logout Modal Styles */
+/* ======================================== */
+
+.logout-modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    background-color: #FFFFFF;
+}
+
+.logout-modal-header {
+    background-color: #FFFFFF;
+    border-bottom: 1px solid #e9ecef;
+    padding: 20px 24px 16px;
+}
+
+.logout-modal-header .modal-title {
+    font-weight: 600;
+    font-size: 1.25rem;
+    margin: 0;
+    color: #212529;
+}
+
+.logout-modal-header .btn-close {
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+}
+
+.logout-modal-header .btn-close:hover {
+    opacity: 1;
+}
+
+.logout-modal-body {
+    padding: 24px;
+    text-align: center;
+}
+
+.logout-message {
+    font-size: 1rem;
+    color: #6c757d;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.logout-modal-footer {
+    border: none;
+    padding: 16px 24px 24px;
+    gap: 12px;
+    justify-content: center;
+}
+
+.logout-modal-footer .btn {
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    min-width: 80px;
+    transition: all 0.2s ease;
+}
+
+.logout-modal-footer .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: white;
+}
+
+.logout-modal-footer .btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+.logout-modal-footer .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+.logout-modal-footer .btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+/* Modal Backdrop */
+.modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Animation for modal */
+.modal.fade .modal-dialog {
+    transform: scale(0.9) translateY(-20px);
+    transition: all 0.2s ease;
+}
+
+.modal.show .modal-dialog {
+    transform: scale(1) translateY(0);
+}
+
+/* Mobile Responsive Modal */
+@media (max-width: 576px) {
+    .logout-modal-header {
+        padding: 16px 20px 12px;
+    }
+    
+    .logout-modal-header .modal-title {
+        font-size: 1.1rem;
+    }
+    
+    .logout-modal-body {
+        padding: 20px;
+    }
+    
+    .logout-message {
+        font-size: 0.95rem;
+    }
+    
+    .logout-modal-footer {
+        padding: 12px 20px 20px;
+        flex-direction: column;
+    }
+    
+    .logout-modal-footer .btn {
+        width: 100%;
+        margin: 0;
+    }
+}
+
