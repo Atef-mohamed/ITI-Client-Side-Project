@@ -169,9 +169,7 @@ border: 1px solid var(--border-dark);
   color: light-dark(#212529, #e9ecef);
   /* border: 1px solid  var(--border-dark); */
 }
-.table thead th{
-    white-space: nowrap;
-}
+
 .table-responsive .table td {
   background-color: light-dark(#fdfdfd, #1e1e1e);
   color: light-dark(#212529, #e9ecef);
