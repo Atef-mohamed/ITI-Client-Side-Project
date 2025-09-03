@@ -9,17 +9,13 @@
   <link rel="stylesheet" href="../css/all.min.css">
   <link rel="stylesheet" href="../css/admin.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-  <!-- Bootstrap Default -->
-  <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"> -->
 
-  <!-- Bootswatch Dark Theme (Darkly) -->
-  <!-- <link id="dark-theme" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/darkly/bootstrap.min.css" rel="stylesheet" > -->
 
 </head>
 
 <body>
   <!-- nab bar  -->
-  <nav class="navbar navbar-expand-lg  position-fixed top-0  bg-body-tertiary border-bottom w-100 py-3 mb-5"
+  <nav class="navbar navbar-expand-lg  position-fixed top-0   w-100 py-3 mb-5"
     style="z-index: 10000;">
     <div class="container-fluid">
       <!-- Logo -->
@@ -66,6 +62,8 @@
       </div>
     </div>
   </nav>
+
+
   <div class="container-fluid main mx-0 ">
 
     <!-- Main Content -->
@@ -97,6 +95,13 @@
 
         <!-- card2 -->
         <div class="col-md-3">
+
+
+
+
+
+
+
           <div class="card text-center shadow-sm card2 h-100">
             <div class="card-body" id="attcard">
               <i class="fa-regular fa-calendar-check fa-xl attendanceicon"></i>
@@ -136,7 +141,7 @@
             <!-- empoloyees table  -->
 
             <div class="card mt-4 tablecard">
-              <div class="card-body">
+              <div class="card-body cardbody">
                 <div class="d-flex justify-content-between align-items-center my-3 mx-3 flex-wrap gap-2">
                   <h5 class="card-title">Employees Report</h5>
                   <!-- div contain btn and sort -->
@@ -147,7 +152,7 @@
 
                     <!-- sort by  -->
                     <div class="d-flex align-items-center mx-2 ">
-                      <select id="sortStatus" class="form-select w-auto ">
+                      <select id="sortStatus" class="form-select w-auto filtering">
                         <option value="" disabled selected hidden>Filtered by: status</option>
                         <option value="all">All</option>
                         <option value="present">Present</option>
@@ -168,9 +173,10 @@
                   <table class="table align-middle">
                     <thead class="tabletitle">
                       <tr class="tablehead ">
-                        <th class="text-center"  scope="col">Id</th>
+                        <th class="text-center" scope="col">Id</th>
                         <th class="text-center" scope="col">Employee Name</th>
                         <th class="text-center" scope="col">Department</th>
+                        <th class="text-center" scope="col">Date</th>
                         <th class="text-center" scope="col">Status</th>
                         <th class="text-center" scope="col">Tasks</th>
                         <th class="text-center" scope="col">Tasks Completed </th>
@@ -189,16 +195,16 @@
 
                   <nav aria-label="Page navigation example" class="d-flex justify-content-end pagination">
                     <ul class="pagination">
-                      <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
+                      <li class="page-item ">
+                        <a class="page-link pag" aria-label="Previous">
                           <span aria-hidden="true">&laquo;</span>
                         </a>
                       </li>
-                      <li class="page-item active"><a class="page-link " href="#">1</a></li>
-                      <li class="page-item"><a class="page-link" href="#">2</a></li>
-                      <li class="page-item"><a class="page-link" href="#">3</a></li>
+                      <li class="page-item active"><a class="page-link " >1</a></li>
+                      <li class="page-item"><a class="page-link pag" >2</a></li>
+                      <li class="page-item"><a class="page-link pag" >3</a></li>
                       <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
+                        <a class="page-link pag"  aria-label="Next">
                           <span aria-hidden="true">&raquo;</span>
                         </a>
                       </li>
@@ -216,19 +222,53 @@
           <div class="col-md-4">
             <!-- here card  -->
             <!-- ideal employee card  -->
-            <div class="card text-center shadow-sm mt-4">
-              <div class="card-body ">
-                <h5 class="mb-3" style="color: rgb(49, 49, 49);"> Ideal Employee of the Month</h5>
-                <div id="idealEmployeeCard" class="text-black">
+
+            <div class="row">
+
+              <div class="card text-center shadow-sm mt-4 ideal-card">
+                <div class="card-body ">
+                  <h5 class="mb-3"> Ideal Employee of the Month</h5>
+                  <div id="idealEmployeeCard">
+                  </div>
                 </div>
               </div>
+
+              <!-- attendence kpi  -->
+
+
+                  <div class="card text-center shadow-sm  mt-4  kpiattcard ">
+                    <div class="card-body ">
+                      <h5 class="card-title table-title">Attendance KPI (Monthly Summary)</h5>
+                      <div class="table-responsive">
+                        <table class="table text-center">
+                          <thead class="tabletitle">
+                            <tr class="tablehead">
+                              <th  scope="col"><span class="Emp-th">Employee</span></th>
+                              <th scope="col"><span class="p-th">Present</span></th>
+                              <th scope="col"> <span class="A-th">Absent</span></th>
+                              <th scope="col"><span class="L-th">Late</span></th>
+                              <th scope="col"> <span class="wfh-th">WFH</span></th>
+                            </tr>
+                          </thead>
+                          <tbody id="attendance-kpi">
+  
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+          <!-- end of kpi card -->
+
             </div>
 
           </div>
+
         </div>
         <!-- end of row -->
       </div>
       <!-- end of container  -->
+
+
 
       <!-- ******************************************************************************************** -->
 
@@ -239,19 +279,20 @@
           <!-- column of tasks card  -->
           <div class="col-md-6">
             <div class="card tablecard h-100">
-              <div class="card-body">
+              <div class="card-body cardbody">
                 <div class="d-flex align-items-center justify-content-between my-3  mx-3 flex-wrap gap-2">
 
                   <h5 class="card-title">Tasks Report</h5>
                   <!-- div contain btn and sort -->
                   <div class="ms-auto d-flex justify-content-center align-items-center">
                     <!-- btn export -->
-                    <button type="button" class="btn btn-primary mx-2">Export PDF <i class="fa-solid fa-download"></i>
+                    <button type="button" class="btn btn-primary mx-2" id="btnExportTasks">Export Excel <i
+                        class="fa-solid fa-download"></i>
                     </button>
 
                     <!-- sort by  -->
                     <div class="d-flex align-items-center mx-2 ">
-                      <select id="sortTask" class="form-select w-auto ">
+                      <select id="sortTask" class="form-select w-auto filtering">
                         <option value="" disabled selected hidden>Filtered by: status</option>
                         <option value="all">All</option>
                         <option value="Completed">Completed</option>
@@ -287,15 +328,15 @@
                 <nav aria-label="Page navigation example" class="d-flex justify-content-end pagination">
                   <ul class="pagination">
                     <li class="page-item">
-                      <a class="page-link" href="#" aria-label="Previous">
+                      <a class="page-link pag"  aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                       </a>
                     </li>
-                    <li class="page-item active"><a class="page-link " href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item active"><a class="page-link  ">1</a></li>
+                    <li class="page-item"><a class="page-link pag">2</a></li>
+                    <li class="page-item"><a class="page-link pag" >3</a></li>
                     <li class="page-item">
-                      <a class="page-link" href="#" aria-label="Next">
+                      <a class="page-link pag"  aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                       </a>
                     </li>
@@ -308,19 +349,20 @@
           <!-- second column contains permission card  -->
           <div class="col-md-6">
             <div class="card tablecard h-100">
-              <div class="card-body">
+              <div class="card-body cardbody">
                 <div class="d-flex align-items-center justify-content-between my-3  mx-3 flex-wrap gap-2">
 
                   <h5 class="card-title">Permissions Report</h5>
                  <!-- div contain btn and sort -->
                   <div class="ms-auto d-flex justify-content-center align-items-center">
                     <!-- btn export -->
-                    <button type="button" class="btn btn-primary mx-2">Export PDF <i class="fa-solid fa-download"></i>
+                    <button type="button" class="btn btn-primary mx-2" id="btnExportPermision">Export Excel <i
+                        class="fa-solid fa-download"></i>
                     </button>
 
                     <!-- sort by  -->
                     <div class="d-flex align-items-center mx-2 ">
-                      <select id="sortPermission" class="form-select w-auto ">
+                      <select id="sortPermission" class="form-select w-auto filtering">
                         <option value="" disabled selected hidden>Filtered by: status</option>
                         <option value="all">All</option>
                         <option value="approved">Approved</option>
@@ -339,15 +381,15 @@
                 <nav aria-label="Page navigation example" class="d-flex justify-content-end pagination">
                   <ul class="pagination">
                     <li class="page-item">
-                      <a class="page-link" href="#" aria-label="Previous">
+                      <a class="page-link pag"  aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                       </a>
                     </li>
-                    <li class="page-item active"><a class="page-link " href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                      <a class="page-link" href="#" aria-label="Next">
+                    <li class="page-item active pag"><a class="page-link " >1</a></li>
+                    <li class="page-item "><a class="page-link pag" >2</a></li>
+                    <li class="page-item "><a class="page-link pag">3</a></li>
+                    <li class="page-item ">
+                      <a class="page-link pag"  aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                       </a>
                     </li>
