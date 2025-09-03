@@ -300,9 +300,8 @@ if (navbarSearch) {
   });
 }
 
-// =====================
+
 // Logout Handler
-// =====================
 let logoutBtn = document.getElementById("logout");
 logoutBtn.addEventListener("click", () => {
   const isLoggedIn = localStorage.getItem("employee");
