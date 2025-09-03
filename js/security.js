@@ -1,20 +1,31 @@
-let modeImg = document.querySelector(".mode");
+// =====================
+// Dark/Light Mode Toggle
+// =====================
+const modeIcon = document.getElementById("themeToggle");
 
-modeImg.addEventListener("click", () => {
+modeIcon.addEventListener("click", () => {
   document.body.classList.toggle("dark-mode");
-}); 
+  modeIcon.classList.toggle("fa-sun");
+  modeIcon.classList.toggle("fa-moon");
+});
 
+// =====================
+// Page Initialization
+// =====================
 document.addEventListener("DOMContentLoaded", () => {
   let today = new Date();
   let formattedDate =
     today.getDate() + "-" + (today.getMonth() + 1) + "-" + today.getFullYear();
   document.getElementById("last-seen").innerText = formattedDate;
 
-
   let savedData = localStorage.getItem("attendanceData");
   if (savedData) {
     let parsed = JSON.parse(savedData);
-    displayTable(parsed.employees, parsed.attendanceRecords);
+    displayTable(
+      parsed.employees,
+      parsed.attendanceRecords,
+      parsed.permissions
+    );
     addBulkAction();
     addSubmitAction(parsed);
     applyFilters("");
@@ -22,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch("../data.json")
       .then((response) => response.json())
       .then((data) => {
-        displayTable(data.employees, data.attendanceRecords);
+        displayTable(data.employees, data.attendanceRecords, data.permissions);
         addBulkAction();
         addSubmitAction(data);
         applyFilters("");
@@ -31,16 +42,33 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-
-function displayTable(employees, attendanceRecords) {
+// =====================
+// Display Attendance Table
+// =====================
+function displayTable(employees, attendanceRecords, permissions = []) {
   let tbody = document.querySelector(".mytable tbody");
   tbody.innerHTML = "";
 
+  let today = new Date().toISOString().split("T")[0];
+
   employees.forEach((emp) => {
-    let record = attendanceRecords.find((r) => r.employeeId === emp.id);
+    let record = attendanceRecords.find(
+      (r) => r.employeeId === emp.id && r.date === today
+    );
+
     let row = document.createElement("tr");
     row.dataset.leave = record?.isLeave;
     row.dataset.wfh = record?.isWFH;
+
+    let checkoutValue = record?.checkOut || "";
+
+    if (
+      record?.isLeave &&
+      !record?.notes?.toLowerCase().includes("absent") &&
+      !record.checkOut
+    ) {
+      checkoutValue = "17:00";
+    }
 
     row.innerHTML = `
       <td><input type="checkbox" class="row-select"/></td>
@@ -48,40 +76,83 @@ function displayTable(employees, attendanceRecords) {
       <td>${emp.name}</td>
       <td>${emp.department}</td>
       <td><span class="status badge bg-secondary"></span></td>
-      <td><input type="time" class="checkin text-center ps-4" value="${record?.checkIn || ""}" disabled></td>
-      <td><input type="time" class="checkout text-center ps-4" value="${record?.checkOut || ""}" disabled></td>
+      <td><input type="time" class="checkin text-center ps-4" value="${
+        record?.checkIn || ""
+      }" disabled></td>
+      <td><input type="time" class="checkout text-center ps-4" value="${checkoutValue}" disabled></td>
       <td>${record?.notes || ""}</td>
     `;
     tbody.appendChild(row);
 
-    
+    // =====================
+    // Update status logic
+    // =====================
     row.updateStatus = function () {
       let statusCell = row.querySelector(".status");
       let checkInInput = row.querySelector(".checkin");
       let onLeave = row.dataset.leave === "true";
       let wfh = row.dataset.wfh === "true";
       let time = checkInInput.value;
+      let notesCell = row.children[7];
 
-      if (wfh) {
-        statusCell.textContent = "Present (WFH)";
-        statusCell.className = "status present";
-      } else if (onLeave) {
-        statusCell.textContent = "Leave";
-        statusCell.className = "status leave";
-      } else if (!time || time > "11:00") {
-        statusCell.textContent = "Absent";
-        statusCell.className = "status absent";
-      } else if (time > "09:00" && time <= "11:00") {
-        statusCell.textContent = "Late";
-        statusCell.className = "status late";
+      // 🔎 check if there's an approved permission
+      let approvedPermission = (permissions || []).find(
+        (p) =>
+          p.employeeId === emp.id &&
+          p.payload?.requestedDate === today &&
+          p.status === "Approved"
+      );
+
+      if (approvedPermission) {
+        let reason = approvedPermission.payload?.reason || "";
+        notesCell.textContent = reason;
+
+        switch (approvedPermission.type) {
+          case "Leave":
+            statusCell.textContent = "Leave";
+            statusCell.className = "status leave";
+            return;
+          case "WFH":
+            statusCell.textContent = "Present (WFH)";
+            statusCell.className = "status present";
+            return;
+          case "Late":
+            statusCell.textContent = "Present (Approved Late)";
+            statusCell.className = "status present";
+            return;
+          case "Overtime":
+            statusCell.textContent = "Present (Overtime)";
+            statusCell.className = "status present";
+            return;
+          default:
+            statusCell.textContent = "Approved Permission";
+            statusCell.className = "status present";
+        }
       } else {
-        statusCell.textContent = "Present";
-        statusCell.className = "status present";
+        let notes = notesCell.textContent.trim().toLowerCase();
+
+        if (wfh) {
+          statusCell.textContent = "Present (WFH)";
+          statusCell.className = "status present";
+        } else if (onLeave && notes && !notes.includes("absent")) {
+          statusCell.textContent = "Leave";
+          statusCell.className = "status leave";
+        } else if (!time || time > "11:00") {
+          statusCell.textContent = "Absent";
+          statusCell.className = "status absent";
+        } else if (time > "09:00" && time <= "11:00") {
+          statusCell.textContent = "Late";
+          statusCell.className = "status late";
+        } else {
+          statusCell.textContent = "Present";
+          statusCell.className = "status present";
+        }
       }
     };
+
     row.updateStatus();
 
-   
+    // Enable/disable time inputs with checkbox
     let checkbox = row.querySelector(".row-select");
     checkbox.addEventListener("change", () => {
       let checkinInput = row.querySelector(".checkin");
@@ -92,7 +163,9 @@ function displayTable(employees, attendanceRecords) {
   });
 }
 
-
+// =====================
+// Submit Button Action
+// =====================
 function addSubmitAction(dataObj) {
   const submitBtn = document.getElementById("submit-btn");
   const tbody = document.querySelector(".mytable tbody");
@@ -107,13 +180,20 @@ function addSubmitAction(dataObj) {
         let checkIn = row.querySelector(".checkin").value;
         let checkOut = row.querySelector(".checkout").value;
         let status = row.querySelector(".status").textContent;
+        let notes = row.children[7].textContent;
 
-        let record = dataObj.attendanceRecords.find((r) => r.employeeId === empId);
+        let record = dataObj.attendanceRecords.find(
+          (r) => r.employeeId === empId
+        );
         if (record) {
           record.checkIn = checkIn;
           record.checkOut = checkOut;
           record.status = status;
+          record.notes = notes;
         }
+        checkbox.checked = false;
+        row.querySelector(".checkin").disabled = true;
+        row.querySelector(".checkout").disabled = true;
       }
     });
 
@@ -122,7 +202,9 @@ function addSubmitAction(dataObj) {
   });
 }
 
-
+// =====================
+// Bulk Action (Select All)
+// =====================
 function addBulkAction() {
   const selectAll = document.getElementById("select-all");
   const tbody = document.querySelector(".mytable tbody");
@@ -140,14 +222,20 @@ function addBulkAction() {
   });
 }
 
-
+// =====================
+// Filters & Search
+// =====================
 let searchInput = document.getElementById("search");
 let dropdownItems = document.querySelectorAll(".dropdown-menu .dropdown-item");
 let dropdownLabel = document.querySelector(".filter-dropdown .fw-bold");
 let activeCount = document.getElementById("activeCount");
 
 let nameOfSecurity = document.querySelector("#security-name");
+let userOfSecurity = document.querySelector("#security-user");
 nameOfSecurity.textContent = JSON.parse(localStorage.getItem("employee")).name;
+userOfSecurity.textContent = JSON.parse(
+  localStorage.getItem("employee")
+).username;
 
 function applyFilters(selected = "") {
   const term = searchInput.value.toLowerCase();
@@ -173,8 +261,9 @@ function applyFilters(selected = "") {
   activeCount.textContent = visibleCount;
 }
 
-searchInput.addEventListener("input", () => applyFilters(dropdownLabel.textContent));
-
+searchInput.addEventListener("input", () =>
+  applyFilters(dropdownLabel.textContent)
+);
 
 dropdownItems.forEach((item) => {
   item.addEventListener("click", (e) => {
@@ -185,9 +274,77 @@ dropdownItems.forEach((item) => {
   });
 });
 
-// handle logout
+// =====================
+// Navbar Search
+// =====================
+const navbarSearch = document.getElementById("search");
+
+if (navbarSearch) {
+  navbarSearch.addEventListener("input", () => {
+    const term = navbarSearch.value.toLowerCase();
+    let visibleCount = 0;
+
+    document.querySelectorAll(".mytable tbody tr").forEach((row) => {
+      const id = row.children[1].textContent.toLowerCase();
+      const name = row.children[2].textContent.toLowerCase();
+
+      if (id.includes(term) || name.includes(term)) {
+        row.style.display = "";
+        visibleCount++;
+      } else {
+        row.style.display = "none";
+      }
+    });
+
+    activeCount.textContent = visibleCount;
+  });
+}
+
+// =====================
+// Logout Handler
+// =====================
 let logoutBtn = document.getElementById("logout");
 logoutBtn.addEventListener("click", () => {
-  localStorage.removeItem("employee");
-  window.location.href = "login.html";
+  const isLoggedIn = localStorage.getItem("employee");
+
+  if (!isLoggedIn) {
+    swal({
+      title: "No active session!",
+      text: "You're not logged in to logout.",
+      icon: "error",
+      buttons: false,
+      timer: 2000,
+    });
+    return;
+  }
+
+  swal({
+    title: "Are you sure?",
+    text: "Once you logout, you will need to login again to access this page.",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+  }).then((willLogout) => {
+    if (willLogout) {
+      localStorage.removeItem("employee");
+
+      swal({
+        title: "Logged out!",
+        text: "You have successfully logged out.",
+        icon: "success",
+        timer: 1500,
+        buttons: false,
+      }).then(() => {
+        window.location.replace("login.html");
+      });
+    } else {
+      swal({
+        title: "Cancelled",
+        text: "You're still logged in!",
+        icon: "info",
+        buttons: false,
+        timer: 2000,
+      });
+    }
+  });
 });

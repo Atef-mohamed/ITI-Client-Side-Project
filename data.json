@@ -192,13 +192,13 @@
       "id": 4,
       "employeeId": 1,
       "date": "2025-09-02",
-      "checkIn": null,
-      "checkOut": null,
-      "status": "Leave",
-      "minutesLate": 0,
+      "checkIn": "09:15",
+      "checkOut": "17:00",
+      "status": "Late",
+      "minutesLate": 15,
       "isWFH": false,
-      "isLeave": true,
-      "notes": "Annual leave"
+      "isLeave": false,
+      "notes": "Arrived late"
     },
     {
       "id": 5,
@@ -240,7 +240,7 @@
       "id": 9,
       "employeeId": 2,
       "date": "2025-08-31",
-      "checkIn": null,
+      "checkIn": "09:00",
       "checkOut": null,
       "status": "Leave",
       "minutesLate": 0,
@@ -288,7 +288,7 @@
       "id": 13,
       "employeeId": 2,
       "date": "2025-09-04",
-      "checkIn": null,
+      "checkIn": "09:00",
       "checkOut": null,
       "status": "Leave",
       "minutesLate": 0,
@@ -324,7 +324,7 @@
       "id": 17,
       "employeeId": 3,
       "date": "2025-09-01",
-      "checkIn": null,
+      "checkIn": "09:00",
       "checkOut": null,
       "status": "Leave",
       "minutesLate": 0,
@@ -336,13 +336,13 @@
       "id": 18,
       "employeeId": 3,
       "date": "2025-09-02",
-      "checkIn": "09:15",
+      "checkIn": null,
       "checkOut": null,
-      "status": "Late",
-      "minutesLate": 15,
+      "status": "Leave",
+      "minutesLate": 0,
       "isWFH": false,
       "isLeave": true,
-      "notes": ""
+      "notes": "Family matter"
     },
     {
       "id": 19,
@@ -372,7 +372,7 @@
       "id": 22,
       "employeeId": 4,
       "date": "2025-08-30",
-      "checkIn": null,
+      "checkIn": "09:00",
       "checkOut": null,
       "status": "Leave",
       "minutesLate": 0,
@@ -476,18 +476,18 @@
       "isLeave": false,
       "notes": "Work from home"
     },
-    {
-      "id": 32,
-      "employeeId": 5,
-      "date": "2025-09-02",
-      "checkIn": null,
-      "checkOut": null,
-      "status": "Absent",
-      "minutesLate": 0,
-      "isWFH": false,
-      "isLeave": true,
-      "notes": "Absent without notice"
-    },
+     {
+    "id": 32,
+    "employeeId": 5,
+    "date": "2025-09-02",
+    "checkIn": "09:00",
+    "checkOut": "18:00",
+    "status": "Present",   
+    "minutesLate": 0,
+    "isWFH": false,
+    "isLeave": false,     
+    "notes": "Report deadline"
+  },
     {
       "id": 33,
       "employeeId": 5,
@@ -540,7 +540,7 @@
       "id": 38,
       "employeeId": 6,
       "date": "2025-09-01",
-      "checkIn": null,
+      "checkIn": "09:00",
       "checkOut": null,
       "status": "Leave",
       "minutesLate": 0,
@@ -612,7 +612,7 @@
       "id": 45,
       "employeeId": 7,
       "date": "2025-09-01",
-      "checkIn": null,
+      "checkIn": "09:00",
       "checkOut": null,
       "status": "Leave",
       "minutesLate": 0,
@@ -624,13 +624,13 @@
       "id": 46,
       "employeeId": 7,
       "date": "2025-09-02",
-      "checkIn": "09:00",
-      "checkOut": "17:00",
-      "status": "Present",
+      "checkIn": null,
+      "checkOut": null,
+      "status": "Leave",
       "minutesLate": 0,
       "isWFH": false,
-      "isLeave": false,
-      "notes": ""
+      "isLeave": true,
+      "notes": "Sick leave"
     },
     {
       "id": 47,
@@ -648,7 +648,7 @@
       "id": 48,
       "employeeId": 7,
       "date": "2025-09-04",
-      "checkIn": null,
+      "checkIn": "09:00",
       "checkOut": null,
       "status": "Leave",
       "minutesLate": 0,
@@ -696,13 +696,13 @@
       "id": 53,
       "employeeId": 8,
       "date": "2025-09-02",
-      "checkIn": null,
-      "checkOut": null,
-      "status": "Absent",
+      "checkIn": "09:00",
+      "checkOut": "17:00",
+      "status": "WFH",
       "minutesLate": 0,
-      "isWFH": false,
-      "isLeave": true,
-      "notes": "Absent without notice"
+      "isWFH": true,
+      "isLeave": false,
+      "notes": "Focus work"
     },
     {
       "id": 54,
@@ -732,7 +732,7 @@
       "id": 57,
       "employeeId": 9,
       "date": "2025-08-30",
-      "checkIn": null,
+      "checkIn": "09:00",
       "checkOut": null,
       "status": "Leave",
       "minutesLate": 0,
@@ -765,16 +765,16 @@
       "notes": "Arrived late"
     },
     {
-      "id": 60,
+      "id": 59,
       "employeeId": 9,
       "date": "2025-09-02",
       "checkIn": "09:15",
-      "checkOut": "17:10",
-      "status": "WFH",
-      "minutesLate": 0,
-      "isWFH": true,
+      "checkOut": "17:00",
+      "status": "Late",
+      "minutesLate": 15,
+      "isWFH": false,
       "isLeave": false,
-      "notes": "Work from home"
+      "notes": "Car issue"
     },
     {
       "id": 61,
@@ -828,7 +828,7 @@
       "id": 66,
       "employeeId": 10,
       "date": "2025-09-01",
-      "checkIn": null,
+      "checkIn": "09:00",
       "checkOut": null,
       "status": "Leave",
       "minutesLate": 0,
@@ -879,57 +879,57 @@
       "employeeId": 1,
       "type": "Late",
       "payload": {
-        "requestedDate": "2025-08-01",
+        "requestedDate": "2025-09-02",
         "minutesExpectedLate": 15,
         "reason": "Traffic",
         "numberOfRequests": 2
       },
       "status": "Approved",
       "managerComment": "Okay",
-      "createdAt": "2025-07-31T10:00:00Z",
-      "decidedAt": "2025-07-31T18:00:00Z"
+      "createdAt": "2025-08-31T10:00:00Z",
+      "decidedAt": "2025-09-2T18:00:00Z"
     },
     {
       "id": 2,
       "employeeId": 2,
       "type": "WFH",
       "payload": {
-        "requestedDate": "2025-08-02",
+        "requestedDate": "2025-09-02",
         "reason": "Personal",
         "numberOfRequests": 1
       },
       "status": "Rejected",
       "managerComment": "Granted",
       "createdAt": "2025-08-01T09:00:00Z",
-      "decidedAt": "2025-08-01T12:00:00Z"
+      "decidedAt": "2025-09-2T12:00:00Z"
     },
     {
       "id": 3,
       "employeeId": 3,
       "type": "Leave",
       "payload": {
-        "requestedDate": "2025-08-03",
+        "requestedDate": "2025-09-02",
         "reason": "Family matter",
         "numberOfRequests": 1
       },
       "status": "Approved",
       "managerComment": "Take care",
       "createdAt": "2025-08-01T09:00:00Z",
-      "decidedAt": "2025-08-01T14:00:00Z"
+      "decidedAt": "2025-09-02T14:00:00Z"
     },
     {
       "id": 4,
       "employeeId": 4,
       "type": "Extend Task",
       "payload": {
-        "requestedDate": "2025-08-04",
+        "requestedDate": "2025-09-03",
         "minutesExpectedLate": 5,
         "reason": "Metro delay",
         "numberOfRequests": 2
       },
       "status": "Pending",
       "managerComment": "",
-      "createdAt": "2025-08-03T15:00:00Z",
+      "createdAt": "2025-09-02T15:00:00Z",
       "decidedAt": null
     },
     {
@@ -937,37 +937,37 @@
       "employeeId": 5,
       "type": "Overtime",
       "payload": {
-        "requestedDate": "2025-08-05",
+        "requestedDate": "2025-09-02",
         "hours": 3,
         "reason": "Report deadline",
         "numberOfRequests": 1
       },
       "status": "Approved",
       "managerComment": "Thanks",
-      "createdAt": "2025-08-04T16:00:00Z",
-      "decidedAt": "2025-08-04T18:00:00Z"
+      "createdAt": "2025-09-1T16:00:00Z",
+      "decidedAt": "2025-09-2T18:00:00Z"
     },
     {
       "id": 6,
       "employeeId": 6,
       "type": "DeadlineExtension",
       "payload": {
-        "requestedDate": "2025-08-06",
+        "requestedDate": "2025-09-02",
         "extraDays": 2,
         "reason": "Project complexity",
         "numberOfRequests": 1
       },
       "status": "Rejected",
       "managerComment": "Not possible",
-      "createdAt": "2025-08-05T10:00:00Z",
-      "decidedAt": "2025-08-05T13:00:00Z"
+      "createdAt": "2025-09-1T10:00:00Z",
+      "decidedAt": "2025-09-2T13:00:00Z"
     },
     {
       "id": 7,
       "employeeId": 7,
       "type": "Leave",
       "payload": {
-        "requestedDate": "2025-08-07",
+        "requestedDate": "2025-09-02",
         "reason": "Sick leave",
         "numberOfRequests": 2
       },
@@ -981,43 +981,43 @@
       "employeeId": 8,
       "type": "WFH",
       "payload": {
-        "requestedDate": "2025-08-08",
+        "requestedDate": "2025-09-02",
         "reason": "Focus work",
         "numberOfRequests": 1
       },
       "status": "Approved",
       "managerComment": "Okay",
-      "createdAt": "2025-08-07T08:00:00Z",
-      "decidedAt": "2025-08-07T10:00:00Z"
+      "createdAt": "2025-08-31T08:00:00Z",
+      "decidedAt": "2025-09-2T10:00:00Z"
     },
     {
       "id": 9,
       "employeeId": 9,
       "type": "Late",
       "payload": {
-        "requestedDate": "2025-08-09",
+        "requestedDate": "2025-09-02",
         "minutesExpectedLate": 15,
         "reason": "Car issue",
         "numberOfRequests": 1
       },
       "status": "Approved",
       "managerComment": "Noted",
-      "createdAt": "2025-08-08T19:00:00Z",
-      "decidedAt": "2025-08-08T20:00:00Z"
+      "createdAt": "2025-08-31T19:00:00Z",
+      "decidedAt": "2025-09-2T20:00:00Z"
     },
     {
       "id": 10,
       "employeeId": 10,
       "type": "Overtime",
       "payload": {
-        "requestedDate": "2025-08-10",
+        "requestedDate": "2025-09-02",
         "hours": 2,
         "reason": "HR audit",
         "numberOfRequests": 1
       },
       "status": "Pending",
       "managerComment": "",
-      "createdAt": "2025-08-09T12:00:00Z",
+      "createdAt": "2025-09-02T12:00:00Z",
       "decidedAt": null
     }
   ],
