@@ -5,20 +5,27 @@
 }
 :root {
   color-scheme: light;
+ 
+  
+ 
 }
 
 :root.dark {
   color-scheme: dark;
+  --border-dark :rgb(40, 39, 61) ;
 }
 body {
   overflow-x: hidden;
-  background-color: light-dark(#ffffff, #121212);
-  color: light-dark(#212529, #e9ecef) !important;
+  background-color: light-dark(#ffffff,rgb(40, 39, 61));
+  color: light-dark(rgb(40, 39, 61), #e9ecef) !important;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .table-title{
-  color: #1e1e1e;
+
+
+  color: light-dark(#1e1e1e , #ffffff) !important;
+
 }
 .profilepic {
   width: 50px;
@@ -30,16 +37,22 @@ body {
 
 nav {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  background-color: light-dark(#fdfdfd, #1e1e1e);
-  border-bottom: 1px solid var(--border);
+  background-color: light-dark(#fdfdfd, rgb(40, 39, 61));
+ 
+  
 }
+.dark nav {
+  border-bottom: 1px solid rgb(40, 39, 61); /* Dark mode */
+}
+
 
 
 .main {
   margin-top: 100px;
 }
 .mainpage {
-  background-color: light-dark(#fdfdfd, #1e1e1e);
+  background-color: light-dark(#fdfdfd, rgb(40, 39, 61));
+  
 }
 
 .logo {
@@ -57,11 +70,13 @@ nav {
 .search {
   width: 400px;
   position: relative;
+  
 }
 .searchinput {
   padding-left: 35px;
   border-radius: 20px;
   height: 40px;
+
 }
 .searchicon {
   position: absolute;
@@ -86,7 +101,7 @@ nav {
     color: light-dark(#212529, #e9ecef);
 }
 .maincontainer {
-  background-color: var(--light-dark(#f8f9fa, #2a2a2a));
+  background-color: var(--light-dark(#f8f9fa, rgb(40, 39, 61)));
 }
 
 
@@ -129,18 +144,30 @@ nav {
   border-spacing: 0;
   border-radius: 10px;
   overflow: hidden;
+
 }
 .tabletitle,
 .table-responsive .table thead {
-  background-color: light-dark(rgb(234, 240, 255), #2a2f3a);
+  background-color: light-dark(rgb(234, 240, 255),rgb(40, 39, 61));
 }
+
+ 
+/* .cardbody-table {
+  border-radius: 10px;}  */
+
+:root.dark .tablecard, 
+:root.dark .cardbody-table {
+border: 1px solid var(--border-dark); 
+}
+
+
 .tabletitle,
 .table-responsive .table thead
-.tablecard {
+.tablecard ,.kpiattcard{
   border-radius: 10px;
-  background: light-dark(#fdfdfd, #1e1e1e);
+  background: light-dark(#fdfdfd,rgb(43, 42, 67));
   color: light-dark(#212529, #e9ecef);
-  border: 1px solid light-dark(#dee2e6, #2c2c2c);
+  /* border: 1px solid  var(--border-dark); */
 }
 .table thead th{
     white-space: nowrap;
@@ -166,11 +193,43 @@ nav {
   color: light-dark(#212529, #e9ecef);
 } 
 
-.status.late , .status.Pending , .status.wfh {
+
+
+.table-responsive .table td {
+  background-color: light-dark(#fdfdfd,rgb(43, 42, 67));
+  color: light-dark(rgb(40, 39, 61), #e9ecef);
+  
+}
+
+
+
+
+.cardbody-table , .cardbody{
+  background-color: light-dark(#fdfdfd,rgb(43, 42, 67));
+  color: light-dark(rgb(43, 42, 67), #e9ecef);
+}
+
+.pagination{
+    background-color:  light-dark(#ffffff, rgb(43, 42, 67)) !important;
+    color:  light-dark(#ffffff, rgb(43, 42, 67)) !important;
+}
+
+.pag{
+  background-color:  light-dark(#ffffff, rgb(43, 42, 67)) !important;
+}
+
+.ideal-card,
+#idealEmployeeCard>div{
+  background-color: light-dark(#fdfdfd, rgb(43, 42, 67));
+  color: light-dark(rgb(40, 39, 61) , #e9ecef);
+} 
+
+.status.late , .status.Pending , .status.wfh , .L-th{
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background-color: rgb(255, 242, 231) !important;
+    background-color:light-dark(rgb(255, 242, 231) , rgb(64, 51, 62))  !important;
     color: rgb(255, 129, 16);
     border-radius: 12px;
     width: 90px;
@@ -180,12 +239,12 @@ nav {
 
 }
 
-.status.present , .status.Approved , .status.Completed {
+.status.present , .status.Approved , .status.Completed  ,  .p-th{
    
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background-color: rgb(233, 247, 242)!important;
+    background-color: light-dark(rgb(233, 247, 242), rgb(42, 55, 73)) !important;
     color:rgb(46, 180, 133);
     border-radius: 12px;
     width: 90px;
@@ -194,12 +253,12 @@ nav {
     padding: 5px 10px;
 }
 
-.status.absent , .status.Rejected , .status.Missed{
+.status.absent , .status.Rejected , .status.Missed , .A-th{
     
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background-color:rgb(255, 236, 232) !important;
+    background-color: light-dark( rgb(255, 236, 232), rgb(64, 44, 63) ) !important;
     color: rgb(255, 64, 28);
     border-radius: 12px;
     width: 90px;
@@ -208,12 +267,12 @@ nav {
     padding: 5px 10px;
 }
 
-.status.Ongoing , .status.leave {
+.status.Ongoing , .status.leave , .wfh-th ,.Emp-th {
 
  display: inline-flex;
     align-items: center;
     justify-content: center;
-    background-color:rgb(230, 247, 255)!important;
+    background-color:  light-dark( rgb(230, 247, 255) , rgb(39, 56, 85)  ) !important;
     color:rgb(2, 180, 250);
     border-radius: 12px;
     width: 90px;
@@ -221,7 +280,25 @@ nav {
     height: 35px;
     padding: 5px 10px;
 }
+.A{
 
+   
+  background-color:  light-dark(rgb(255, 236, 232), rgb(40, 39, 61) ) !important;
+}
+.P{
+background-color: light-dark(rgb(233, 247, 242),  rgb(40, 39, 61)) !important;
+    
+
+}
+.L{
+ background-color:  light-dark( rgb(255, 242, 231),  rgb(40, 39, 61) ) !important; 
+   
+}
+
+.wfh {
+ background-color: light-dark(rgb(230, 247, 255), rgb(40, 39, 61))  !important;
+   
+}
 
 
 
@@ -235,22 +312,22 @@ nav {
 
 
 .card1 {
-  background-color: light-dark(rgb(253, 247, 241), #2d1f1f);
+  background-color: light-dark(rgb(253, 247, 241), rgb(64, 51, 62));
   border: none;
   border-radius: 10px;
 }
 .card2 {
-  background-color: light-dark(rgb(240, 249, 253), #1e2a32);
+  background-color: light-dark(rgb(240, 249, 253), rgb(39, 56, 85));
   border: none;
   border-radius: 10px;
 }
 .card3 {
-  background-color: light-dark(rgb(242, 249, 246), #1d2e25);
+  background-color: light-dark(rgb(242, 249, 246), rgb(42, 55, 73));
   border: none;
   border-radius: 10px;
 }
 .card4 {
-  background-color:light-dark(rgb(253, 243, 241), #2c1f1f);
+  background-color:light-dark(rgb(253, 243, 241), rgb(64, 44, 63));
   border: none;
   border-radius: 10px;
 }
@@ -274,4 +351,10 @@ nav {
 
 #backToTop:hover {
   background-color: #555;
+}
+
+.filtering {
+
+   background-color: light-dark(#fdfdfd,rgb(43, 42, 67));
+  color: light-dark(rgb(43, 42, 67), #e9ecef);
 }

@@ -28,6 +28,7 @@ fetch("../data.json")
       "2025-08"
     );
     renderIdealEmployeeCard(idealEmps);
+    renderAttendanceKPI(employeesData, attendanceData, "2025-09");
 
     updateKPIs(employeesData, attendanceData, payrollsData);
     renderTaskOversight(tasksData, employeesData);
@@ -44,8 +45,11 @@ function renderTable(employees, attendance, tasks, payrolls) {
   for (let i = 0; i < employees.length; i++) {
     const emp = employees[i];
 
-    const empAttendance = attendance.find((a) => a.employeeId === emp.id);
-    const status = empAttendance ? empAttendance.status.toLowerCase() : "N/A";
+   const empAttendanceRecords = attendance.filter((a) => a.employeeId === emp.id);
+   const latestAttendance = empAttendanceRecords.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+   const status = latestAttendance ? latestAttendance.status.toLowerCase() : "N/A";
+   const lastDate = latestAttendance ? latestAttendance.date : "N/A";
+
 
     const empTasks = tasks.filter((t) => t.assignees.includes(emp.id));
     const Tasks = empTasks.length;
@@ -62,8 +66,8 @@ function renderTable(employees, attendance, tasks, payrolls) {
 
     const netSalary = payroll
       ? emp.monthlySalary -
-        (payroll.latePenalty + payroll.absencePenalty + payroll.taskPenalty) +
-        (payroll.overtimePay + payroll.bonus)
+      (payroll.latePenalty + payroll.absencePenalty + payroll.taskPenalty) +
+      (payroll.overtimePay + payroll.bonus)
       : emp.monthlySalary;
 
     const tr = document.createElement("tr");
@@ -71,6 +75,7 @@ function renderTable(employees, attendance, tasks, payrolls) {
     <td>${emp.id}</td>
     <td>${emp.name}</td>
     <td class="text-center">${emp.department}</td>
+    <td class="text-center">${lastDate}</td>
     <td class="text-center"><span class="status ${status}">${status}</span></td>
     <td class="text-center">${Tasks}</td>
     <td class="text-center">${completedTasks}</td>
@@ -81,6 +86,31 @@ function renderTable(employees, attendance, tasks, payrolls) {
     tabledata.appendChild(tr);
   }
 }
+// attendence kpi monthly summary 
+function renderAttendanceKPI(employees, attendance, month = "2025-09") {
+  const tbody = document.getElementById("attendance-kpi");
+  tbody.innerHTML = "";
+
+  employees.forEach(emp => {
+    const empAttendance = attendance.filter(a => a.employeeId === emp.id && a.date.startsWith(month));
+
+    let present = empAttendance.filter(a => a.status.toLowerCase() === "present").length;
+    let absent = empAttendance.filter(a => a.status.toLowerCase() === "absent").length;
+    let late = empAttendance.filter(a => a.status.toLowerCase() === "late").length;
+    let wfh = empAttendance.filter(a => a.status.toLowerCase() === "wfh").length;
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${emp.name}</td>
+      <td class="P">${present}</td>
+      <td class="A">${absent}</td>
+      <td class="L">${late}</td>
+      <td class="wfh">${wfh}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
 
 // cards kpis
 function updateKPIs(employees, attendance, payrolls) {
@@ -90,8 +120,10 @@ function updateKPIs(employees, attendance, payrolls) {
     totalPayrollImpact = 0;
 
   employees.forEach((emp) => {
-    const empAttendance = attendance.find((a) => a.employeeId === emp.id);
-    const status = empAttendance ? empAttendance.status.toLowerCase() : "N/A";
+    const empAttendanceRecords = attendance.filter((a) => a.employeeId === emp.id);
+   const latestAttendance = empAttendanceRecords.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+   const status = latestAttendance ? latestAttendance.status.toLowerCase() : "N/A";
+
 
     if (status === "present") presentCount++;
     else if (status === "absent") absentCount++;
@@ -146,10 +178,11 @@ function tableSort() {
     filteredEmployees = employeesData;
   } else {
     filteredEmployees = employeesData.filter((emp) => {
-      const empAttendance = attendanceData.find((a) => a.employeeId === emp.id);
+       const empAttendanceRecords = attendanceData.filter((a) => a.employeeId === emp.id);
+      const latestAttendance = empAttendanceRecords.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
       return (
-        empAttendance &&
-        empAttendance.status.toLowerCase() === sorttable.value.toLowerCase()
+        latestAttendance &&
+        latestAttendance.status.toLowerCase() === sorttable.value.toLowerCase()
       );
     });
   }
@@ -231,21 +264,70 @@ function renderIdealEmployeeCard(idealEmployees) {
   const container = document.getElementById("idealEmployeeCard");
   container.innerHTML = "";
 
-  if (idealEmployees.length > 0) {
-    let finalEmp = idealEmployees[0]; //first ideal employee
+  if (idealEmployees.length === 0) {
+    container.innerHTML = `<div class="alert alert-warning">⚠️ No Ideal Employee this month</div>`;
+    return;
+  }
+
+  let finalEmp;
+
+  if (idealEmployees.length === 1) {
+    finalEmp = idealEmployees[0];
+  } else {
+    // -------- First Tie-breaker: Task Completion --------
+    idealEmployees.forEach((emp) => {
+      let empTasks = tasksData.filter((t) => t.assignees.includes(emp.id));
+      let completed = empTasks.filter(
+        (t) => t.status.toLowerCase() === "completed"
+      ).length;
+      let total = empTasks.length || 1;
+      emp.taskCompletionRate = (completed / total) * 100;
+    });
+
+    let maxRate = Math.max(...idealEmployees.map((e) => e.taskCompletionRate));
+    let topByTasks = idealEmployees.filter(
+      (e) => e.taskCompletionRate === maxRate
+    );
+
+    if (topByTasks.length === 1) {
+      finalEmp = topByTasks[0];
+    } else {
+      // -------- Second tie-breaker: Least Approved Permissions --------
+      topByTasks.forEach((emp) => {
+        let empPerms = permissionRequestsData.filter(
+          (p) =>
+            p.employeeId === emp.id &&
+            p.status.toLowerCase() === "approved"
+        );
+        emp.approvedPerms = empPerms.length;
+      });
+
+      let minPerms = Math.min(...topByTasks.map((e) => e.approvedPerms));
+      let topByPerms = topByTasks.filter(
+        (e) => e.approvedPerms === minPerms
+      );
+
+      if (topByPerms.length === 1) {
+        finalEmp = topByPerms[0];
+      } else {
+
+        finalEmp = topByPerms[0];
+      }
+    }
+  }
+
+  // -------- Show Final Employee Card --------
+  if (finalEmp) {
     let bonus = Number(finalEmp.monthlySalary) * 0.1;
     container.innerHTML = `
       <div class="card text-center p-3 position-relative ">
-      <i class="fa-solid fa-star position-absolute top-0 start-0 m-2 fa-2x" style="color: #FFD43B;"></i>
-       <img src="../assets/images/idealpic.jpg" class="rounded-circle idealimg mx-auto d-block" />
+        <i class="fa-solid fa-star position-absolute top-0 start-0 m-2 fa-2x" style="color: #FFD43B;"></i>
+        <img src="../assets/images/idealpic.jpg" class="rounded-circle idealimg mx-auto d-block" />
         <p><strong>${finalEmp.name}</strong></p>
         <p>Department: ${finalEmp.department}</p>
         <p>Bonus: $${bonus}</p>
-       
       </div>
     `;
-  } else {
-    container.innerHTML = `<div class="alert alert-warning">⚠️ No Ideal Employee this month</div>`;
   }
 }
 
@@ -278,33 +360,36 @@ function renderTaskOversight(tasksData, employeesData) {
   container.innerHTML = `
     
         ${tasksData
-          .map(
-            (t) => `
+      .map(
+        (t) => `
           <tr>
             <td class="text-center" >${t.title}</td>
             <td class="text-center" >
              ${t.assignees
-               .map((id) => {
-                 let emp = employeesData.find((e) => e.id === id);
-                 if (emp) {
-                   return emp.name;
-                 } else {
-                   return "N/A";
-                 }
-               })
-               .join(", ")}
+            .map((id) => {
+              let emp = employeesData.find((e) => e.id === id);
+              if (emp) {
+                return emp.name;
+              } else {
+                return "N/A";
+              }
+            })
+            .join(", ")}
              </td>
             <td class="text-center" >${t.deadline}</td>
 
 
-            <td class="text-center" ><span class="status ${t.status}">${
-              t.status
-            }</span></td>
+
+
+            <td class="text-center" ><span class="status ${t.status}">${t.status
+          }</span></td>
+
+
 
           </tr>
         `
-          )
-          .join("")}
+      )
+      .join("")}
      
   `;
 }
@@ -360,24 +445,24 @@ function renderPermissionsOversight(permissionRequestsData, employeesData) {
       </thead>
       <tbody>
         ${permissionRequestsData
-          .map(
-            (p) => `
+      .map(
+        (p) => `
           <tr>
-            <td class="text-center">${
-              employeesData.find((e) => e.id === p.employeeId)?.name || "N/A"
-            }</td>
+            <td class="text-center">${employeesData.find((e) => e.id === p.employeeId)?.name || "N/A"
+          }</td>
             <td class="text-center">${p.type}</td>
             <td class="text-center">${p.payload.requestedDate}</td>
 
-            <td class="text-center"> <span class="status ${p.status}"> ${
-              p.status
-            } </span></td>
+
+            <td class="text-center"> <span class="status ${p.status}"> ${p.status
+          } </span></td>
+
 
             
           </tr>
         `
-          )
-          .join("")}
+      )
+      .join("")}
       </tbody>
     </table>
     </div>
@@ -519,7 +604,7 @@ document.querySelectorAll(".btn-secondary").forEach((btn) => {
 
 // load when page starts
 window.onload = loadSettings;
-// search by name or id
+// search by name or department
 let searchInput = document.getElementById("search");
 searchInput.addEventListener("input", () => {
   let searchTerm = searchInput.value.toLowerCase();
