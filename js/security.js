@@ -33,7 +33,11 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch("../data.json")
       .then((response) => response.json())
       .then((data) => {
-        displayTable(data.employees, data.attendanceRecords, data.permissions);
+        displayTable(
+          data.employees,
+          data.attendanceRecords,
+          data.permissionRequests
+        );
         addBulkAction();
         addSubmitAction(data);
         applyFilters("");
@@ -299,7 +303,6 @@ if (navbarSearch) {
     activeCount.textContent = visibleCount;
   });
 }
-
 
 // Logout Handler
 let logoutBtn = document.getElementById("logout");
