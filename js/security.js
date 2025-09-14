@@ -99,7 +99,7 @@ function displayTable(employees, attendanceRecords, permissions = []) {
       let time = checkInInput.value;
       let notesCell = row.children[7];
 
-      // 🔎 check if there's an approved permission
+      // check if there's an approved permission
       let approvedPermission = (permissions || []).find(
         (p) =>
           p.employeeId === emp.id &&
@@ -109,48 +109,58 @@ function displayTable(employees, attendanceRecords, permissions = []) {
 
       if (approvedPermission) {
         let reason = approvedPermission.payload?.reason || "";
-        notesCell.textContent = reason;
+        notesCell.textContent = reason; 
 
         switch (approvedPermission.type) {
           case "Leave":
             statusCell.textContent = "Leave";
             statusCell.className = "status leave";
             return;
+
           case "WFH":
             statusCell.textContent = "Present (WFH)";
             statusCell.className = "status present";
+            notesCell.textContent = reason || "Work From Home";
             return;
+
           case "Late":
-            statusCell.textContent = "Present (Approved Late)";
+            statusCell.textContent = "Present (Approved Late)"; 
             statusCell.className = "status present";
+            notesCell.textContent = reason || "Approved Late Arrival";
             return;
+
           case "Overtime":
             statusCell.textContent = "Present (Overtime)";
             statusCell.className = "status present";
+            notesCell.textContent = reason || "Approved Overtime";
             return;
-          default:
-            statusCell.textContent = "Approved Permission";
-            statusCell.className = "status present";
-        }
-      } else {
-        let notes = notesCell.textContent.trim().toLowerCase();
 
-        if (wfh) {
-          statusCell.textContent = "Present (WFH)";
-          statusCell.className = "status present";
-        } else if (onLeave && notes && !notes.includes("absent")) {
-          statusCell.textContent = "Leave";
-          statusCell.className = "status leave";
-        } else if (!time || time > "11:00") {
-          statusCell.textContent = "Absent";
-          statusCell.className = "status absent";
-        } else if (time > "09:00" && time <= "11:00") {
-          statusCell.textContent = "Late";
-          statusCell.className = "status late";
-        } else {
-          statusCell.textContent = "Present";
-          statusCell.className = "status present";
+          default:
+            statusCell.textContent = "Present";
+            statusCell.className = "status present";
+            notesCell.textContent = reason || "Approved Permission";
         }
+      }
+
+      if (wfh) {
+        statusCell.textContent = "Present (WFH)";
+        statusCell.className = "status present";
+      } else if (
+        onLeave &&
+        notesCell.textContent &&
+        !notesCell.textContent.includes("absent")
+      ) {
+        statusCell.textContent = "Leave";
+        statusCell.className = "status leave";
+      } else if (!time || time > "11:00") {
+        statusCell.textContent = "Absent";
+        statusCell.className = "status absent";
+      } else if (time > "09:00" && time <= "11:00") {
+        statusCell.textContent = "Late";
+        statusCell.className = "status late";
+      } else {
+        statusCell.textContent = "Present";
+        statusCell.className = "status present";
       }
     };
 
@@ -202,7 +212,14 @@ function addSubmitAction(dataObj) {
     });
 
     localStorage.setItem("attendanceData", JSON.stringify(dataObj));
-    alert("Saved in LocalStorage ✅");
+
+    swal({
+      title: "Saved!",
+      text: "Attendance data has been stored in LocalStorage ✅",
+      icon: "success",
+      button: "OK",
+      timer: 2000,
+    });
   });
 }
 
@@ -223,6 +240,15 @@ function addBulkAction() {
       checkinInput.disabled = !cb.checked;
       checkoutInput.disabled = !cb.checked;
     });
+  });
+
+  // Sync child checkboxes with parent
+  tbody.addEventListener("change", (e) => {
+    if (e.target.classList.contains("row-select")) {
+      let allCheckboxes = tbody.querySelectorAll("input.row-select");
+      let checkedOnes = tbody.querySelectorAll("input.row-select:checked");
+      selectAll.checked = allCheckboxes.length === checkedOnes.length;
+    }
   });
 }
 
@@ -304,7 +330,9 @@ if (navbarSearch) {
   });
 }
 
+// =====================
 // Logout Handler
+// =====================
 let logoutBtn = document.getElementById("logout");
 logoutBtn.addEventListener("click", () => {
   const isLoggedIn = localStorage.getItem("employee");
