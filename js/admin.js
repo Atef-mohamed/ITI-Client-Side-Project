@@ -33,7 +33,7 @@ fetch("../data.json")
     updateKPIs(employeesData, attendanceData, payrollsData);
     renderTaskOversight(tasksData, employeesData);
     renderPermissionsOversight(permissionRequestsData, employeesData);
-    renderPayrollDeductionsSummary(employeesData, payrollsData, "2025-08");
+    
   })
   .catch((error) => console.error("Error loading JSON:", error));
 
@@ -87,12 +87,12 @@ function renderTable(employees, attendance, tasks, payrolls) {
   }
 }
 // attendence kpi monthly summary 
-function renderAttendanceKPI(employees, attendance, month = "2025-09") {
+function renderAttendanceKPI(employees, attendance) {
   const tbody = document.getElementById("attendance-kpi");
   tbody.innerHTML = "";
 
   employees.forEach(emp => {
-    const empAttendance = attendance.filter(a => a.employeeId === emp.id && a.date.startsWith(month));
+    const empAttendance = attendance.filter(a => a.employeeId === emp.id && a.date.includes("2025-09"));
 
     let present = empAttendance.filter(a => a.status.toLowerCase() === "present").length;
     let absent = empAttendance.filter(a => a.status.toLowerCase() === "absent").length;
@@ -517,7 +517,7 @@ const defaultSettings = {
   low: 5,
   medium: 8,
   high: 12,
-  critical: 20,
+  critical: 15,
   // Overtime
   weekday: 1.25,
   weekend: 1.5,
@@ -604,6 +604,7 @@ document.querySelectorAll(".btn-secondary").forEach((btn) => {
 
 // load when page starts
 window.onload = loadSettings;
+
 // search by name or department
 let searchInput = document.getElementById("search");
 searchInput.addEventListener("input", () => {
